@@ -1,0 +1,36 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const notes = await getCollection('notes');
+  return notes.map(note => ({
+    params: { slug: note.slug },
+    props: { note },
+  }));
+}
+
+const { note } = Astro.props;
+const { Content } = await note.render();
+---
+
+<Base title={note.data.title} description={note.data.meta}>
+  <a href="/notes" class="back-link">← back to notes</a>
+
+  <article>
+    <header class="post-header">
+      <div class="post-header-meta">
+        <span class={`tag tag-${note.data.tag}`}>{note.data.tag}</span>
+        <span style="font-family: var(--font-mono); font-size: 11px; color: var(--ink-muted);">
+          updated {new Date(note.data.updated).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' })}
+        </span>
+      </div>
+      <h1 style="font-size: clamp(24px, 4vw, 36px);">{note.data.title}</h1>
+      <p class="post-header-desc">{note.data.meta}</p>
+    </header>
+
+    <div class="prose">
+      <Content />
+    </div>
+  </article>
+</Base>

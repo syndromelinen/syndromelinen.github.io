@@ -1,0 +1,108 @@
+---
+import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('blog');
+const sorted = allPosts.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+
+// pass posts as JSON to client-side JS
+const postsJSON = JSON.stringify(sorted.map(p => ({
+  slug: p.slug,
+  title: p.data.title,
+  description: p.data.description,
+  date: p.data.date,
+  tag: p.data.tag,
+})));
+
+const tags = ['all', ...new Set(sorted.map(p => p.data.tag))];
+---
+
+<Base title="blog" description="All posts — cybersec, notes, writeups, life.">
+
+  <section style="padding-top: 56px;">
+    <div class="eyebrow">all posts</div>
+
+    <div class="search-wrap">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input
+        id="search"
+        class="search-input"
+        type="search"
+        placeholder="search posts..."
+        autocomplete="off"
+      />
+    </div>
+
+    <div class="filter-bar" id="filters">
+      {tags.map((tag, i) => (
+        <button
+          class={`filter-btn${i === 0 ? ' active' : ''}`}
+          data-tag={tag}
+        >
+          {tag}
+        </button>
+      ))}
+    </div>
+
+    <div class="post-list" id="post-list"></div>
+    <div class="empty" id="empty-msg" style="display:none;">no posts match that.</div>
+  </section>
+</Base>
+
+<script define:vars={{ postsJSON }}>
+  const POSTS = JSON.parse(postsJSON);
+  let activeTag = 'all';
+  let query = '';
+
+  function fmt(d) {
+    return new Date(d).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
+  }
+
+  function render() {
+    const list = document.getElementById('post-list');
+    const empty = document.getElementById('empty-msg');
+    const q = query.toLowerCase();
+
+    const filtered = POSTS.filter(p => {
+      const tagMatch = activeTag === 'all' || p.tag === activeTag;
+      const textMatch = !q || p.title.toLowerCase().includes(q) || p.description.toLowerCase().includes(q);
+      return tagMatch && textMatch;
+    });
+
+    if (filtered.length === 0) {
+      list.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+
+    empty.style.display = 'none';
+    list.innerHTML = filtered.map(p => `
+      <a href="/blog/${p.slug}" class="post-item">
+        <span class="post-date">${fmt(p.date)}</span>
+        <span>
+          <div class="post-title">${p.title}</div>
+          <div class="post-desc">${p.description}</div>
+        </span>
+        <span class="tag tag-${p.tag}">${p.tag}</span>
+      </a>
+    `).join('');
+  }
+
+  document.getElementById('search').addEventListener('input', e => {
+    query = e.target.value;
+    render();
+  });
+
+  document.getElementById('filters').addEventListener('click', e => {
+    const btn = e.target.closest('.filter-btn');
+    if (!btn) return;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeTag = btn.dataset.tag;
+    render();
+  });
+
+  render();
+</script>

@@ -1,0 +1,107 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="about" description="Who is kennytherex.">
+
+  <section style="padding-top: 56px;">
+    <div class="eyebrow">about</div>
+
+    <div class="about-intro">
+      <p>
+        hey. i'm kenneth — <strong>kennytherex</strong> online.
+        just a cybersec guy, 2nd year CS student out of mumbai, trying to get good at offensive security
+        and eventually do that work somewhere abroad.
+      </p>
+      <p>
+        i spend most of my time on <strong>hack the box</strong>, grinding through labs, rooting machines,
+        taking notes in obsidian. the goal is to actually understand how things break — not just pass a cert.
+      </p>
+      <p>
+        outside of that: <strong>mathematics and physics</strong> are a genuine passion, not just study material.
+        professor leonard and HC verma are in regular rotation. i have a loose dream of understanding aerospace someday.
+        i also write in a physical diary, read books, and make art.
+      </p>
+      <p>
+        <strong>faith</strong> is the anchor. everything else is built on top of that.
+      </p>
+      <p>
+        this site is my public documentary — the grind, the machines, the small wins, the rough patches.
+        if you're on a similar path, hello.
+      </p>
+    </div>
+
+    <!-- CERT ROADMAP -->
+    <div style="margin-top: 48px;">
+      <div class="eyebrow">cert roadmap</div>
+      <div class="roadmap">
+        <div class="road-item">
+          <span class="road-num">01</span>
+          <span class="road-name">HTB CPTS</span>
+          <span class="road-badge active">in progress</span>
+        </div>
+        <div class="road-item">
+          <span class="road-num">02</span>
+          <span class="road-name">OSCP</span>
+          <span class="road-badge next">up next</span>
+        </div>
+        <div class="road-item">
+          <span class="road-num">03</span>
+          <span class="road-name">BSCP</span>
+          <span class="road-badge next">upcoming</span>
+        </div>
+        <div class="road-item">
+          <span class="road-num">04</span>
+          <span class="road-name">OSEP / CAPE</span>
+          <span class="road-badge next">mid-career</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TIMELINE -->
+    <div style="margin-top: 48px;">
+      <div class="eyebrow">milestones</div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-date">Mar 2026</div>
+          <div class="tl-title">Research paper — IRCBDAV 2026</div>
+          <div class="tl-desc">ML approaches for detecting OWASP web application attacks. one of the youngest presenters. recommended for publication.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">2025</div>
+          <div class="tl-title">C-AgAIPen — The SecOps Group</div>
+          <div class="tl-desc">agentic AI pentesting — prompt injection, indirect injection, path traversal against an HR portal.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">2025</div>
+          <div class="tl-title">Google Cybersecurity Professional</div>
+          <div class="tl-desc">plus Oracle OCI Architect Associate and DevOps Professional.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">ongoing</div>
+          <div class="tl-title">HTB machines</div>
+          <div class="tl-desc">WingData, Pterodactyl, AirTouch (WPA2-Enterprise evil twin), Overwatch (AD + MSSQL chain).</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CURRENTLY -->
+    <div style="margin-top: 48px;">
+      <div class="eyebrow">currently</div>
+      <div style="display: flex; flex-direction: column; gap: 10px; margin-left: 28px;">
+        {[
+          ['grinding', 'HTB CPTS — Nmap module and beyond'],
+          ['reading', 'HC Verma, Professor Leonard'],
+          ['listening', 'whatever feels right'],
+          ['building toward', 'working abroad — UK first'],
+        ].map(([label, val]) => (
+          <div style="display: flex; gap: 16px; font-size: 14px;">
+            <span style="font-family: var(--font-mono); font-size: 11px; color: var(--ink-muted); min-width: 110px; padding-top: 2px;">{label}</span>
+            <span style="color: var(--ink-dim);">{val}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+</Base>

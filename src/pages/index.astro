@@ -1,0 +1,89 @@
+---
+import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('blog');
+const sorted = allPosts
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+  .slice(0, 5);
+
+function fmt(d) {
+  return new Date(d).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
+}
+---
+
+<Base title="home" description="Kenneth Solomon aka kennytherex — cybersec, offensive security, the grind.">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="eyebrow">public documentary</div>
+    <h1>Kenneth Solomon</h1>
+    <p class="hero-sub">
+      aka kennytherex. just a cybersec guy who likes breaking things and figuring out how they work.
+      documenting the grind, the machines, the notes — and everything else.
+    </p>
+
+    <div class="hero-chips">
+      <span class="chip">offensive security</span>
+      <span class="chip">
+        <a href="https://github.com/syndromelinen" target="_blank" rel="noopener">github/syndromelinen</a>
+      </span>
+      <span class="chip">
+        <a href="https://app.hackthebox.com/profile/2522807" target="_blank" rel="noopener">htb #2522807</a>
+      </span>
+      <span class="chip">mumbai → abroad</span>
+    </div>
+
+    <div class="hero-stats">
+      <div>
+        <div class="stat-num" id="post-count">—</div>
+        <div class="stat-label">posts</div>
+      </div>
+      <div>
+        <div class="stat-num" id="note-count">—</div>
+        <div class="stat-label">notes</div>
+      </div>
+      <div>
+        <div class="stat-num">2.5y</div>
+        <div class="stat-label">til abroad</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RECENT POSTS -->
+  <section class="section-block">
+    <div class="section-header">
+      <span class="eyebrow" style="margin-bottom:0">recent posts</span>
+      <a href="/blog" class="view-all">view all →</a>
+    </div>
+
+    <div class="post-list">
+      {sorted.map(post => (
+        <a href={`/blog/${post.slug}`} class="post-item">
+          <span class="post-date">{fmt(post.data.date)}</span>
+          <span>
+            <div class="post-title">{post.data.title}</div>
+            <div class="post-desc">{post.data.description}</div>
+          </span>
+          <span class={`tag tag-${post.data.tag}`}>{post.data.tag}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+</Base>
+
+<script>
+  // Auto-count posts and notes from the API
+  async function loadCounts() {
+    try {
+      const r = await fetch('/api/counts.json');
+      const d = await r.json();
+      const pc = document.getElementById('post-count');
+      const nc = document.getElementById('note-count');
+      if (pc) pc.textContent = String(d.posts).padStart(2, '0');
+      if (nc) nc.textContent = String(d.notes).padStart(2, '0');
+    } catch {}
+  }
+  loadCounts();
+</script>

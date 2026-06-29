@@ -1,0 +1,35 @@
+---
+import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const notes = await getCollection('notes');
+const sorted = notes.sort((a, b) => new Date(b.data.updated).getTime() - new Date(a.data.updated).getTime());
+
+const icons = {
+  cybersec: '⬡',
+  maths: '∑',
+  notes: '✦',
+  writeup: '◈',
+};
+---
+
+<Base title="notes" description="Field notes, Obsidian exports, cheatsheets.">
+
+  <section style="padding-top: 56px;">
+    <div class="eyebrow">field notes</div>
+    <p style="font-size: 13px; color: var(--ink-muted); font-family: var(--font-mono); margin-bottom: 32px; margin-left: 28px;">
+      obsidian exports. built from memory, not copy-paste.
+    </p>
+
+    <div class="note-grid">
+      {sorted.map(note => (
+        <a href={`/notes/${note.slug}`} class="note-card">
+          <span class="note-icon">{icons[note.data.tag] ?? '✦'}</span>
+          <div class="note-title">{note.data.title}</div>
+          <div class="note-meta">{note.data.meta}</div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+</Base>
