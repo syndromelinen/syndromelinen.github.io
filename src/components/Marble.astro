@@ -1,72 +1,34 @@
 ---
 ---
-<canvas id="marble"></canvas>
+<div id="marble">
+  <div id="marble-img"></div>
+</div>
 <script>
-  const canvas = document.getElementById('marble');
-  const ctx = canvas.getContext('2d');
-  let t = 0;
-
-  // mouse parallax — smoothed toward target so it never snaps, softer catch-up than before
-  let mx = 0, my = 0, tmx = 0, tmy = 0;
+  const wrap = document.getElementById('marble');
+  const img = document.getElementById('marble-img');
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // mouse parallax — smoothed toward target so it never snaps
+  let mx = 0, my = 0, tmx = 0, tmy = 0;
 
   window.addEventListener('pointermove', (e) => {
     tmx = (e.clientX / window.innerWidth - 0.5) * 2;
     tmy = (e.clientY / window.innerHeight - 0.5) * 2;
   }, { passive: true });
 
-  function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-  resize();
-  window.addEventListener('resize', resize);
-
-  function draw() {
-    const w = canvas.width, h = canvas.height;
-    ctx.clearRect(0, 0, w, h);
-    ctx.fillStyle = '#09090B';
-    ctx.fillRect(0, 0, w, h);
-
-    // ease mouse target — even softer follow than before, never snaps
+  function tick() {
+    // soft catch-up, never snaps to the cursor
     mx += (tmx - mx) * 0.015;
     my += (tmy - my) * 0.015;
 
-    // less saturated, muted violet-grey instead of vivid purple
-    const pools = [
-      { x: 0.2, y: 0.3, r: 0.5, a: 0.038, p: 0, depth: 0.05 },
-      { x: 0.8, y: 0.6, r: 0.4, a: 0.027, p: 1.5, depth: 0.038 },
-      { x: 0.5, y: 0.85, r: 0.35, a: 0.024, p: 3, depth: 0.028 },
-    ];
-
-    pools.forEach(p => {
-      // slowed drift — smaller time multipliers than before
-      const x = w * (p.x + Math.sin(t * 0.00007 + p.p) * 0.05) + mx * w * p.depth;
-      const y = h * (p.y + Math.cos(t * 0.00006 + p.p) * 0.045) + my * h * p.depth;
-      const r = Math.min(w, h) * p.r;
-      const g = ctx.createRadialGradient(x, y, 0, x, y, r);
-      g.addColorStop(0, `rgba(150,124,205,${p.a})`);
-      g.addColorStop(0.5, `rgba(104,86,140,${p.a * 0.3})`);
-      g.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.fillStyle = g;
-      ctx.fillRect(0, 0, w, h);
-    });
-
-    for (let v = 0; v < 3; v++) {
-      ctx.beginPath();
-      const sx = w * (0.1 + v * 0.35 + Math.sin(t * 0.000035 + v) * 0.05) + mx * w * 0.016;
-      ctx.moveTo(sx, 0);
-      for (let y = 0; y <= h; y += 4) {
-        const x = sx + Math.sin(y * 0.007 + t * 0.0001 + v * 2) * 45 + Math.cos(y * 0.003 + v) * 18;
-        ctx.lineTo(x, y);
-      }
-      ctx.strokeStyle = `rgba(150,124,205,${0.014 + v * 0.006})`;
-      ctx.lineWidth = 1;
-      ctx.stroke();
+    if (wrap) {
+      wrap.style.transform = `translate3d(${mx * 16}px, ${my * 12}px, 0)`;
     }
 
-    if (!reduceMotion) t += 0.6;
-    requestAnimationFrame(draw);
+    if (!reduceMotion) requestAnimationFrame(tick);
   }
-  draw();
+
+  if (!reduceMotion) {
+    requestAnimationFrame(tick);
+  }
 </script>

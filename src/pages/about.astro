@@ -24,11 +24,6 @@ import avatar from '../assets/avatar.jpg';
         I study cybersecurity, build things, and write about what I learn.
       </p>
       <p>
-        Right now I'm grinding through <strong>HTB CPTS</strong>, going start to finish without skipping.
-        The goal is to actually understand how things break — not just pass a cert.
-        After that: OSCP, then BSCP, then wherever the work takes me.
-      </p>
-      <p>
         Outside of security, I care about <strong>mathematics and physics</strong> — not as study material,
         but as genuine interests. Professor Leonard and HC Verma are regulars.
         There's a loose dream of understanding aerospace someday.
@@ -41,56 +36,6 @@ import avatar from '../assets/avatar.jpg';
         This site is my public documentary. The grind, the machines, the small wins, the rough patches.
         If you're on a similar path — hello.
       </p>
-    </div>
-
-    <div style="margin-top: 48px;">
-      <div class="section-title">Currently</div>
-      <ul class="current-list">
-        <li>Grinding HTB CPTS — methodical, no skipping</li>
-        <li>Learning web security at PortSwigger</li>
-        <li>Self-studying Calculus (Professor Leonard)</li>
-        <li>Building toward working abroad — UK first</li>
-      </ul>
-    </div>
-
-    <div style="margin-top: 48px;">
-      <div class="section-title">Cert Roadmap</div>
-      <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 16px;">
-        {[
-          { name: 'HTB CPTS', status: 'in progress', active: true },
-          { name: 'OSCP', status: 'up next', active: false },
-          { name: 'BSCP', status: 'upcoming', active: false },
-          { name: 'OSEP / CAPE', status: 'mid-career', active: false },
-        ].map((c, i) => (
-          <div style={`display:flex;align-items:center;gap:16px;padding:14px 16px;border:1px solid ${c.active ? 'rgba(139,92,246,0.4)' : 'var(--border)'};border-radius:var(--radius);background:${c.active ? 'rgba(139,92,246,0.06)' : 'transparent'}`}>
-            <span style="font-family:var(--font-mono);font-size:11px;color:var(--muted2);">0{i+1}</span>
-            <span style="font-size:14px;font-weight:500;flex:1">{c.name}</span>
-            <span style={`font-family:var(--font-mono);font-size:10px;padding:2px 10px;border-radius:10px;background:${c.active ? 'rgba(139,92,246,0.15)' : 'var(--surface2)'};color:${c.active ? 'var(--purple-hover)' : 'var(--muted2)'}`}>{c.status}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-
-    <div style="margin-top: 48px;">
-      <div class="section-title">Milestones</div>
-      <div class="timeline" style="margin-top: 16px;">
-        <div class="timeline-month">2026</div>
-        <div class="timeline-item" style="cursor:default;">
-          <div class="timeline-date">Mar 2026</div>
-          <div class="timeline-title">Research paper — IRCBDAV 2026</div>
-          <div class="timeline-desc">ML approaches for detecting OWASP attacks. Recommended for publication.</div>
-        </div>
-        <div class="timeline-item" style="cursor:default;">
-          <div class="timeline-date">2025</div>
-          <div class="timeline-title">C-AgAIPen — The SecOps Group</div>
-          <div class="timeline-desc">Agentic AI pentesting — prompt injection, path traversal.</div>
-        </div>
-        <div class="timeline-item" style="cursor:default;">
-          <div class="timeline-date">2025</div>
-          <div class="timeline-title">Google Cybersecurity Professional + Oracle OCI certs</div>
-          <div class="timeline-desc">OCI Architect Associate and DevOps Professional.</div>
-        </div>
-      </div>
     </div>
   </div>
 </Base>
