@@ -5,11 +5,13 @@ export async function GET(context) {
   const cyber = await getCollection('cybersecurity', p => !p.data.draft);
   const prog = await getCollection('programming', p => !p.data.draft);
   const journal = await getCollection('journal', p => !p.data.draft);
+  const notes = await getCollection('notes', p => !p.data.draft);
 
   const all = [
     ...cyber.map(p => ({ ...p, section: 'cybersecurity' })),
     ...prog.map(p => ({ ...p, section: 'programming' })),
     ...journal.map(p => ({ ...p, section: 'journal' })),
+    ...notes.map(p => ({ ...p, section: 'notes' })),
   ].sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
 
   return rss({

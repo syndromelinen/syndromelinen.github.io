@@ -1,7 +1,7 @@
 ---
 import Base from './Base.astro';
 
-const { frontmatter, prev, next, section = 'blog', headings = [], readingTimeMin } = Astro.props;
+const { frontmatter, prev, next, section = 'journal', headings = [], readingTimeMin } = Astro.props;
 const { title, description, date, tags = [] } = frontmatter;
 
 const formatted = new Date(date).toLocaleDateString('en-GB', {

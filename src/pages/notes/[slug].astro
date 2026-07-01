@@ -1,36 +1,23 @@
 ---
-import Base from '../../layouts/Base.astro';
+import Post from '../../layouts/Post.astro';
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
   const notes = await getCollection('notes');
-  return notes.map(note => ({
+  const sorted = notes.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+  return sorted.map((note, i) => ({
     params: { slug: note.slug },
-    props: { note },
+    props: { note, prev: sorted[i + 1] || null, next: sorted[i - 1] || null },
   }));
 }
 
-const { note } = Astro.props;
-const { Content } = await note.render();
+const { note, prev, next } = Astro.props;
+const { Content, headings } = await note.render();
+const raw = note.body;
+const words = (raw || '').trim().split(/\s+/).length;
+const readingTimeMin = Math.max(1, Math.ceil(words / 200));
 ---
 
-<Base title={note.data.title} description={note.data.meta}>
-  <a href="/notes" class="back-link">← back to notes</a>
-
-  <article>
-    <header class="post-header">
-      <div class="post-header-meta">
-        <span class={`tag tag-${note.data.tag}`}>{note.data.tag}</span>
-        <span style="font-family: var(--font-mono); font-size: 11px; color: var(--ink-muted);">
-          updated {new Date(note.data.updated).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' })}
-        </span>
-      </div>
-      <h1 style="font-size: clamp(24px, 4vw, 36px);">{note.data.title}</h1>
-      <p class="post-header-desc">{note.data.meta}</p>
-    </header>
-
-    <div class="prose">
-      <Content />
-    </div>
-  </article>
-</Base>
+<Post frontmatter={note.data} prev={prev} next={next} section="notes" headings={headings} readingTimeMin={readingTimeMin}>
+  <Content />
+</Post>
