@@ -5,7 +5,7 @@ date: "2026-06-15"
 tags: ["astro", "web", "github-pages", "static-site"]
 ---
 
-spent a few days building this site from scratch. astro was the right call — here's what i learned.
+spent a few days building this site from scratch. astro was the right call, here's what i learned.
 
 ## why astro
 

@@ -1,5 +1,5 @@
 ---
-title: "Nmap deep dive — what I learned going methodical"
+title: "Nmap deep dive: what I learned going methodical"
 description: "The flags that tripped me up, UDP scanning, and why --open is underrated."
 date: "2026-06-01"
 tags: ["nmap", "enumeration", "CPTS", "recon"]
@@ -7,7 +7,7 @@ tags: ["nmap", "enumeration", "CPTS", "recon"]
 
 I thought I knew nmap. I didn't.
 
-Going through the CPTS Nmap module properly — reading, closing, writing from memory — surfaced a lot of gaps.
+Going through the CPTS Nmap module properly, reading, closing, writing from memory, surfaced a lot of gaps.
 
 ## scan types that actually matter
 
@@ -25,11 +25,11 @@ Going through the CPTS Nmap module properly — reading, closing, writing from m
 
 ## what tripped me up
 
-**UDP scans** — everything shows as `open|filtered` unless there's a response. that's normal. factor in 20+ minutes for full range.
+**UDP scans**: everything shows as `open|filtered` unless there's a response. that's normal. factor in 20+ minutes for full range.
 
-**`--open` flag** — filters to only open ports in output. i was drowning in filtered/closed noise before this.
+**`--open` flag**: filters to only open ports in output. i was drowning in filtered/closed noise before this.
 
-**`-sV` is noisy** — version detection sends extra probes. on live assessments, be deliberate about when you use it.
+**`-sV` is noisy**: version detection sends extra probes. on live assessments, be deliberate about when you use it.
 
 ## the commands i actually run
 

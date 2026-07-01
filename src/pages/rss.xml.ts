@@ -14,7 +14,7 @@ export async function GET(context) {
 
   return rss({
     title: 'kennytherex',
-    description: 'Kenneth Solomon — cybersec, programming, thoughts.',
+    description: 'Kenneth Solomon, cybersecurity, programming, and thoughts.',
     site: context.site,
     items: all.map(p => ({
       title: p.data.title,

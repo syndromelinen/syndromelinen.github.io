@@ -6,7 +6,7 @@ date: "2026-04-10"
 
 this one isn't about security.
 
-i lost some close friendships this year. not dramatically — no big fallout, no single moment. just a slow drift that eventually became distance that became absence.
+i lost some close friendships this year. not dramatically, no big fallout, no single moment. just a slow drift that eventually became distance that became absence.
 
 it hit harder than i expected.
 
@@ -24,6 +24,6 @@ this site is meant to be honest. the grind posts are easy to write. the personal
 
 but the grind doesn't happen in a vacuum. the person doing the work matters too.
 
-if you're going through something similar — the slow loss of people you thought would stay — it gets cleaner. not necessarily easier, but cleaner.
+if you're going through something similar, the slow loss of people you thought would stay, it gets cleaner. not necessarily easier, but cleaner.
 
 you find out what you're actually made of.

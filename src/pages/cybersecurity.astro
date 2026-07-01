@@ -6,7 +6,6 @@ import { readingTimeMinutes } from '../utils/readingTime';
 const posts = await getCollection('cybersecurity', p => !p.data.draft);
 const sorted = posts.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
 
-const allTags = [...new Set(sorted.flatMap(p => p.data.tags))];
 const postsJSON = JSON.stringify(sorted.map(p => ({
   slug: p.slug,
   title: p.data.title,
@@ -38,11 +37,6 @@ function fmt(d: string) {
       <input id="search" class="search-input" type="search" placeholder="Search posts..." autocomplete="off" />
     </div>
 
-    <div class="tags-row" id="tags">
-      <button class="tag-btn active" data-tag="all">all</button>
-      {allTags.map(t => <button class="tag-btn" data-tag={t}>{t}</button>)}
-    </div>
-
     <div class="cards-grid" id="posts"></div>
     <div class="empty-state" id="empty" style="display:none;">Nothing found.</div>
   </div>
@@ -50,7 +44,7 @@ function fmt(d: string) {
 
 <script define:vars={{ postsJSON }}>
   const POSTS = JSON.parse(postsJSON);
-  let activeTag = 'all', query = '';
+  let query = '';
 
   function fmt(d) {
     return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -61,9 +55,7 @@ function fmt(d: string) {
     const empty = document.getElementById('empty');
     const q = query.toLowerCase();
     const filtered = POSTS.filter(p => {
-      const tm = activeTag === 'all' || p.tags.includes(activeTag);
-      const sm = !q || p.title.toLowerCase().includes(q) || p.description.toLowerCase().includes(q);
-      return tm && sm;
+      return !q || p.title.toLowerCase().includes(q) || p.description.toLowerCase().includes(q);
     });
     empty.style.display = filtered.length ? 'none' : 'block';
     el.innerHTML = filtered.map((p, i) => `
@@ -87,14 +79,6 @@ function fmt(d: string) {
   }
 
   document.getElementById('search').addEventListener('input', e => { query = e.target.value; render(); });
-  document.getElementById('tags').addEventListener('click', e => {
-    const btn = e.target.closest('.tag-btn');
-    if (!btn) return;
-    document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    activeTag = btn.dataset.tag;
-    render();
-  });
 
   render();
 </script>

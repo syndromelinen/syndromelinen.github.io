@@ -85,24 +85,24 @@ body {
 /* ── MARBLE BG ── */
 #marble {
   position: fixed;
-  inset: -20px;
+  inset: -60px;
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
-  opacity: 0.5;
+  opacity: 0.22;
   transition: opacity 0.4s ease;
   will-change: transform;
 }
 
 #marble-img {
   position: absolute;
-  inset: 0;
-  background-image: url('/images/marble-bg.png');
+  inset: -10%;
+  background-image: url('/images/marble-bg.jpg');
   background-size: cover;
-  background-position: center;
+  background-position: center 30%;
   background-repeat: no-repeat;
-  filter: saturate(0.85) brightness(0.9);
-  animation: marbleDrift 36s ease-in-out infinite alternate;
+  filter: saturate(0.6) brightness(0.72) blur(36px);
+  animation: marbleDrift 42s ease-in-out infinite alternate;
   will-change: transform;
 }
 
@@ -110,13 +110,13 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at center, transparent 30%, var(--bg) 92%);
+  background: radial-gradient(ellipse at center, transparent 15%, var(--bg) 78%);
 }
 
 @keyframes marbleDrift {
-  0%   { transform: scale(1.06) translate(-1%, -1%); }
-  50%  { transform: scale(1.12) translate(1%, 0.5%); }
-  100% { transform: scale(1.06) translate(-0.5%, 1%); }
+  0%   { transform: scale(1.1) translate(-1%, -1%); }
+  50%  { transform: scale(1.16) translate(1%, 0.5%); }
+  100% { transform: scale(1.1) translate(-0.5%, 1%); }
 }
 
 @media (prefers-reduced-motion: reduce) {

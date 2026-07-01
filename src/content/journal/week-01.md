@@ -1,10 +1,10 @@
 ---
-title: "week 01 — starting properly"
+title: "week 01: starting properly"
 description: "First week log. Nmap, enumeration basics, and why I'm doing this the slow way."
 date: "2026-06-01"
 ---
 
-started the CPTS path for real this week. not skipping, not jumping around — going start to finish.
+started the CPTS path for real this week. not skipping, not jumping around, going start to finish.
 
 the nmap module is deceptively deep. i thought i knew nmap. i didn't.
 
@@ -17,8 +17,8 @@ built my first proper cheatsheet entry from memory. the rule: no copying from th
 ## the setup
 
 obsidian vault: two files per topic.
-- `topic-theory.md` — what it is, how it works, edge cases
-- `topic-cheatsheet.md` — commands i'd actually run in the field
+- `topic-theory.md`: what it is, how it works, edge cases
+- `topic-cheatsheet.md`: commands i'd actually run in the field
 
 no screenshots of module content. no paste jobs. just my own words.
 
