@@ -1,107 +1,96 @@
 ---
 import Base from '../layouts/Base.astro';
+import { Image } from 'astro:assets';
+import avatar from '../assets/avatar.jpg';
 ---
 
-<Base title="about" description="Who is kennytherex.">
+<Base title="about">
+  <div style="padding-top: 88px;">
+    <div class="section-title" style="margin-bottom: 8px;">About</div>
 
-  <section style="padding-top: 56px;">
-    <div class="eyebrow">about</div>
+    <Image
+      src={avatar}
+      alt="Kenneth Solomon"
+      width={88}
+      height={88}
+      loading="eager"
+      class="about-avatar"
+    />
 
-    <div class="about-intro">
+    <div class="about-text" style="margin-top: 32px;">
+      <p>Hi.</p>
       <p>
-        hey. i'm kenneth — <strong>kennytherex</strong> online.
-        just a cybersec guy, 2nd year CS student out of mumbai, trying to get good at offensive security
-        and eventually do that work somewhere abroad.
+        I'm <strong>Kenneth</strong> — <strong>kennytherex</strong> online.
+        I study cybersecurity, build things, and write about what I learn.
       </p>
       <p>
-        i spend most of my time on <strong>hack the box</strong>, grinding through labs, rooting machines,
-        taking notes in obsidian. the goal is to actually understand how things break — not just pass a cert.
+        Right now I'm grinding through <strong>HTB CPTS</strong>, going start to finish without skipping.
+        The goal is to actually understand how things break — not just pass a cert.
+        After that: OSCP, then BSCP, then wherever the work takes me.
       </p>
       <p>
-        outside of that: <strong>mathematics and physics</strong> are a genuine passion, not just study material.
-        professor leonard and HC verma are in regular rotation. i have a loose dream of understanding aerospace someday.
-        i also write in a physical diary, read books, and make art.
+        Outside of security, I care about <strong>mathematics and physics</strong> — not as study material,
+        but as genuine interests. Professor Leonard and HC Verma are regulars.
+        There's a loose dream of understanding aerospace someday.
       </p>
       <p>
-        <strong>faith</strong> is the anchor. everything else is built on top of that.
+        I also write in a physical diary, read books, and make art.
+        <strong>Faith</strong> is the anchor. Everything else is built on top of that.
       </p>
       <p>
-        this site is my public documentary — the grind, the machines, the small wins, the rough patches.
-        if you're on a similar path, hello.
+        This site is my public documentary. The grind, the machines, the small wins, the rough patches.
+        If you're on a similar path — hello.
       </p>
     </div>
 
-    <!-- CERT ROADMAP -->
     <div style="margin-top: 48px;">
-      <div class="eyebrow">cert roadmap</div>
-      <div class="roadmap">
-        <div class="road-item">
-          <span class="road-num">01</span>
-          <span class="road-name">HTB CPTS</span>
-          <span class="road-badge active">in progress</span>
-        </div>
-        <div class="road-item">
-          <span class="road-num">02</span>
-          <span class="road-name">OSCP</span>
-          <span class="road-badge next">up next</span>
-        </div>
-        <div class="road-item">
-          <span class="road-num">03</span>
-          <span class="road-name">BSCP</span>
-          <span class="road-badge next">upcoming</span>
-        </div>
-        <div class="road-item">
-          <span class="road-num">04</span>
-          <span class="road-name">OSEP / CAPE</span>
-          <span class="road-badge next">mid-career</span>
-        </div>
-      </div>
+      <div class="section-title">Currently</div>
+      <ul class="current-list">
+        <li>Grinding HTB CPTS — methodical, no skipping</li>
+        <li>Learning web security at PortSwigger</li>
+        <li>Self-studying Calculus (Professor Leonard)</li>
+        <li>Building toward working abroad — UK first</li>
+      </ul>
     </div>
 
-    <!-- TIMELINE -->
     <div style="margin-top: 48px;">
-      <div class="eyebrow">milestones</div>
-      <div class="timeline">
-        <div class="tl-item">
-          <div class="tl-date">Mar 2026</div>
-          <div class="tl-title">Research paper — IRCBDAV 2026</div>
-          <div class="tl-desc">ML approaches for detecting OWASP web application attacks. one of the youngest presenters. recommended for publication.</div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-date">2025</div>
-          <div class="tl-title">C-AgAIPen — The SecOps Group</div>
-          <div class="tl-desc">agentic AI pentesting — prompt injection, indirect injection, path traversal against an HR portal.</div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-date">2025</div>
-          <div class="tl-title">Google Cybersecurity Professional</div>
-          <div class="tl-desc">plus Oracle OCI Architect Associate and DevOps Professional.</div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-date">ongoing</div>
-          <div class="tl-title">HTB machines</div>
-          <div class="tl-desc">WingData, Pterodactyl, AirTouch (WPA2-Enterprise evil twin), Overwatch (AD + MSSQL chain).</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- CURRENTLY -->
-    <div style="margin-top: 48px;">
-      <div class="eyebrow">currently</div>
-      <div style="display: flex; flex-direction: column; gap: 10px; margin-left: 28px;">
+      <div class="section-title">Cert Roadmap</div>
+      <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 16px;">
         {[
-          ['grinding', 'HTB CPTS — Nmap module and beyond'],
-          ['reading', 'HC Verma, Professor Leonard'],
-          ['listening', 'whatever feels right'],
-          ['building toward', 'working abroad — UK first'],
-        ].map(([label, val]) => (
-          <div style="display: flex; gap: 16px; font-size: 14px;">
-            <span style="font-family: var(--font-mono); font-size: 11px; color: var(--ink-muted); min-width: 110px; padding-top: 2px;">{label}</span>
-            <span style="color: var(--ink-dim);">{val}</span>
+          { name: 'HTB CPTS', status: 'in progress', active: true },
+          { name: 'OSCP', status: 'up next', active: false },
+          { name: 'BSCP', status: 'upcoming', active: false },
+          { name: 'OSEP / CAPE', status: 'mid-career', active: false },
+        ].map((c, i) => (
+          <div style={`display:flex;align-items:center;gap:16px;padding:14px 16px;border:1px solid ${c.active ? 'rgba(139,92,246,0.4)' : 'var(--border)'};border-radius:var(--radius);background:${c.active ? 'rgba(139,92,246,0.06)' : 'transparent'}`}>
+            <span style="font-family:var(--font-mono);font-size:11px;color:var(--muted2);">0{i+1}</span>
+            <span style="font-size:14px;font-weight:500;flex:1">{c.name}</span>
+            <span style={`font-family:var(--font-mono);font-size:10px;padding:2px 10px;border-radius:10px;background:${c.active ? 'rgba(139,92,246,0.15)' : 'var(--surface2)'};color:${c.active ? 'var(--purple-hover)' : 'var(--muted2)'}`}>{c.status}</span>
           </div>
         ))}
       </div>
     </div>
-  </section>
 
+    <div style="margin-top: 48px;">
+      <div class="section-title">Milestones</div>
+      <div class="timeline" style="margin-top: 16px;">
+        <div class="timeline-month">2026</div>
+        <div class="timeline-item" style="cursor:default;">
+          <div class="timeline-date">Mar 2026</div>
+          <div class="timeline-title">Research paper — IRCBDAV 2026</div>
+          <div class="timeline-desc">ML approaches for detecting OWASP attacks. Recommended for publication.</div>
+        </div>
+        <div class="timeline-item" style="cursor:default;">
+          <div class="timeline-date">2025</div>
+          <div class="timeline-title">C-AgAIPen — The SecOps Group</div>
+          <div class="timeline-desc">Agentic AI pentesting — prompt injection, path traversal.</div>
+        </div>
+        <div class="timeline-item" style="cursor:default;">
+          <div class="timeline-date">2025</div>
+          <div class="timeline-title">Google Cybersecurity Professional + Oracle OCI certs</div>
+          <div class="timeline-desc">OCI Architect Associate and DevOps Professional.</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </Base>

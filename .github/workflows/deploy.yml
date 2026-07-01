@@ -1,4 +1,4 @@
-﻿name: deploy to github pages
+name: deploy to github pages
 
 on:
   push:
@@ -24,7 +24,10 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
+
+      - name: setup pages
+        uses: actions/configure-pages@v5
 
       - name: install dependencies
         run: npm install

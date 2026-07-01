@@ -1,0 +1,46 @@
+---
+import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('journal', p => !p.data.draft);
+const sorted = posts.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+
+// Group by month
+const grouped: Record<string, typeof sorted> = {};
+sorted.forEach(p => {
+  const key = new Date(p.data.date).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+  if (!grouped[key]) grouped[key] = [];
+  grouped[key].push(p);
+});
+
+function fmt(d: string) {
+  return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+}
+---
+
+<Base title="journal">
+  <div style="padding-top: 88px;">
+    <div class="section-title" style="margin-bottom: 8px;">Journal</div>
+    <h1 style="font-family: var(--font-head); font-size: 32px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 10px;">
+      Documenting the grind.
+    </h1>
+    <p style="color: var(--muted); margin-bottom: 48px; max-width: 440px;">
+      Weekly logs, personal notes, random thoughts. Almost like reading someone's diary.
+    </p>
+
+    <div class="timeline">
+      {Object.entries(grouped).map(([month, posts]) => (
+        <>
+          <div class="timeline-month">{month}</div>
+          {posts.map(post => (
+            <a href={`/journal/${post.slug}`} class="timeline-item reveal-up">
+              <div class="timeline-date">{fmt(post.data.date)}</div>
+              <div class="timeline-title">{post.data.title}</div>
+              <div class="timeline-desc">{post.data.description}</div>
+            </a>
+          ))}
+        </>
+      ))}
+    </div>
+  </div>
+</Base>

@@ -1,89 +1,114 @@
 ---
 import Base from '../layouts/Base.astro';
 import { getCollection } from 'astro:content';
+import { readingTimeMinutes } from '../utils/readingTime';
 
-const allPosts = await getCollection('blog');
-const sorted = allPosts
-  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
-  .slice(0, 5);
+const cyber = await getCollection('cybersecurity', p => !p.data.draft);
+const prog = await getCollection('programming', p => !p.data.draft);
+const journal = await getCollection('journal', p => !p.data.draft);
 
-function fmt(d) {
-  return new Date(d).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
+const latestCyber = cyber.sort((a,b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()).slice(0,3);
+const latestProg = prog.sort((a,b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()).slice(0,3);
+const latestJournal = journal.sort((a,b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()).slice(0,3);
+
+function fmt(d: string) {
+  return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 ---
 
-<Base title="home" description="Kenneth Solomon aka kennytherex — cybersec, offensive security, the grind.">
+<Base title="home">
 
   <!-- HERO -->
   <section class="hero">
-    <div class="eyebrow">public documentary</div>
-    <h1>Kenneth Solomon</h1>
-    <p class="hero-sub">
-      aka kennytherex. just a cybersec guy who likes breaking things and figuring out how they work.
-      documenting the grind, the machines, the notes — and everything else.
-    </p>
-
-    <div class="hero-chips">
-      <span class="chip">offensive security</span>
-      <span class="chip">
-        <a href="https://github.com/syndromelinen" target="_blank" rel="noopener">github/syndromelinen</a>
-      </span>
-      <span class="chip">
-        <a href="https://app.hackthebox.com/profile/2522807" target="_blank" rel="noopener">htb #2522807</a>
-      </span>
-      <span class="chip">mumbai → abroad</span>
+    <div class="hero-glow"></div>
+    <div class="hero-label">public documentary</div>
+    <h1>kennytherex<span class="dot">.</span></h1>
+    <div class="hero-stack">
+      <span>Cybersecurity.</span> Programming. Thoughts.
     </div>
-
-    <div class="hero-stats">
-      <div>
-        <div class="stat-num" id="post-count">—</div>
-        <div class="stat-label">posts</div>
-      </div>
-      <div>
-        <div class="stat-num" id="note-count">—</div>
-        <div class="stat-label">notes</div>
-      </div>
-      <div>
-        <div class="stat-num">2.5y</div>
-        <div class="stat-label">til abroad</div>
-      </div>
+    <p class="hero-desc">
+      Building my career in offensive security,<br />
+      one write-up at a time.
+    </p>
+    <div class="hero-btns">
+      <a href="/journal" class="btn btn-primary">
+        Read Journal <span class="btn-arrow">→</span>
+      </a>
+      <a href="/cybersecurity" class="btn btn-secondary">Browse Blogs</a>
     </div>
   </section>
 
-  <!-- RECENT POSTS -->
-  <section class="section-block">
-    <div class="section-header">
-      <span class="eyebrow" style="margin-bottom:0">recent posts</span>
-      <a href="/blog" class="view-all">view all →</a>
-    </div>
+  <hr class="divider" />
 
-    <div class="post-list">
-      {sorted.map(post => (
-        <a href={`/blog/${post.slug}`} class="post-item">
-          <span class="post-date">{fmt(post.data.date)}</span>
-          <span>
-            <div class="post-title">{post.data.title}</div>
-            <div class="post-desc">{post.data.description}</div>
-          </span>
-          <span class={`tag tag-${post.data.tag}`}>{post.data.tag}</span>
+  <!-- LATEST JOURNAL -->
+  <section class="section-block reveal-up">
+    <div class="section-header">
+      <span class="section-title">Latest Journal</span>
+      <a href="/journal" class="view-all">View all →</a>
+    </div>
+    <div class="timeline">
+      {latestJournal.map(post => (
+        <a href={`/journal/${post.slug}`} class="timeline-item reveal-up">
+          <div class="timeline-date">{fmt(post.data.date)}</div>
+          <div class="timeline-title">{post.data.title}</div>
+          <div class="timeline-desc">{post.data.description}</div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- LATEST CYBERSECURITY -->
+  <section class="section-block reveal-up">
+    <div class="section-header">
+      <span class="section-title">Latest Cybersecurity</span>
+      <a href="/cybersecurity" class="view-all">View all →</a>
+    </div>
+    <div class="cards-grid">
+      {latestCyber.map(post => (
+        <a href={`/cybersecurity/${post.slug}`} class="blog-card reveal-up">
+          <div class="card-meta">
+            <span class="card-date">{fmt(post.data.date)}</span>
+            <span class="card-dot">·</span>
+            <span class="card-reading">{readingTimeMinutes(post.body)} min read</span>
+          </div>
+          <div class="card-title">{post.data.title}</div>
+          <div class="card-desc">{post.data.description}</div>
+          <div class="card-footer">
+            <div class="card-tags">
+              {post.data.tags.slice(0,3).map((t: string) => <span class="tag">{t}</span>)}
+            </div>
+            <span class="card-read">Read <span class="btn-arrow">→</span></span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- LATEST PROGRAMMING -->
+  <section class="section-block reveal-up">
+    <div class="section-header">
+      <span class="section-title">Latest Programming</span>
+      <a href="/programming" class="view-all">View all →</a>
+    </div>
+    <div class="cards-grid">
+      {latestProg.map(post => (
+        <a href={`/programming/${post.slug}`} class="blog-card reveal-up">
+          <div class="card-meta">
+            <span class="card-date">{fmt(post.data.date)}</span>
+            <span class="card-dot">·</span>
+            <span class="card-reading">{readingTimeMinutes(post.body)} min read</span>
+          </div>
+          <div class="card-title">{post.data.title}</div>
+          <div class="card-desc">{post.data.description}</div>
+          <div class="card-footer">
+            <div class="card-tags">
+              {post.data.tags.slice(0,3).map((t: string) => <span class="tag">{t}</span>)}
+            </div>
+            <span class="card-read">Read <span class="btn-arrow">→</span></span>
+          </div>
         </a>
       ))}
     </div>
   </section>
 
 </Base>
-
-<script>
-  // Auto-count posts and notes from the API
-  async function loadCounts() {
-    try {
-      const r = await fetch('/api/counts.json');
-      const d = await r.json();
-      const pc = document.getElementById('post-count');
-      const nc = document.getElementById('note-count');
-      if (pc) pc.textContent = String(d.posts).padStart(2, '0');
-      if (nc) nc.textContent = String(d.notes).padStart(2, '0');
-    } catch {}
-  }
-  loadCounts();
-</script>

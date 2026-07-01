@@ -2,15 +2,41 @@
 import Marble from '../components/Marble.astro';
 import '../styles/global.css';
 
-const { title = 'kennytherex', description = "Kenneth Solomon — cybersec, offensive security, the grind." } = Astro.props;
-const currentPath = Astro.url.pathname;
+const {
+  title = 'kennytherex',
+  description = 'Kenneth Solomon — cybersec, programming, thoughts.',
+  showProgress = false,
+  image = '/images/banner.jpg',
+} = Astro.props;
 
-const navLinks = [
-  { href: '/', label: 'home' },
-  { href: '/blog', label: 'blog' },
-  { href: '/notes', label: 'notes' },
-  { href: '/about', label: 'about' },
+const path = Astro.url.pathname;
+
+const links = [
+  { href: '/journal', label: 'Journal' },
+  { href: '/cybersecurity', label: 'Cybersecurity' },
+  { href: '/programming', label: 'Programming' },
+  { href: '/about', label: 'About' },
 ];
+
+const ogImage = new URL(image, Astro.site ?? Astro.url.origin).href;
+
+const socials = {
+  github: 'https://github.com/syndromelinen',
+  linkedin: 'https://www.linkedin.com/in/kenneth-solomon-15000a381/',
+  hackthebox: 'https://profile.hackthebox.com/profile/019cb26f-3741-71a0-9919-68e0ae09240d',
+  x: 'https://x.com/Kennytherex_',
+};
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Kenneth Solomon',
+  alternateName: 'kennytherex',
+  url: (Astro.site ?? Astro.url.origin).toString(),
+  sameAs: [socials.github, socials.linkedin, socials.hackthebox, socials.x],
+  jobTitle: 'Cybersecurity practitioner',
+  description: 'Cybersecurity, programming, and journal writing.',
+};
 ---
 
 <!doctype html>
@@ -19,42 +45,344 @@ const navLinks = [
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content={description} />
+  <meta name="robots" content="index, follow" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@400;500&family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&display=swap"
+  />
+
+  <meta property="og:title" content={`${title} · kennytherex`} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content={Astro.url.href} />
+  <meta property="og:image" content={ogImage} />
+  <meta property="og:site_name" content="kennytherex" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={`${title} · kennytherex`} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={ogImage} />
+
   <title>{title} · kennytherex</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="alternate" type="application/rss+xml" title="kennytherex" href="/rss.xml" />
+  <link rel="canonical" href={Astro.url.href} />
+
+  <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+
+  <script is:inline>
+    // runs before paint — avoids a flash of the wrong theme
+    (function () {
+      const saved = localStorage.getItem('theme');
+      const theme = saved || 'dark';
+      if (theme === 'light') document.documentElement.setAttribute('data-theme', 'light');
+    })();
+  </script>
 </head>
 <body>
+  {showProgress && <div id="reading-progress"></div>}
+
   <Marble />
 
-  <div class="site-wrap">
-    <nav>
-      <a href="/" class="nav-logo">~/<span>kennytherex</span></a>
-      <ul class="nav-links">
-        {navLinks.map(link => (
+  <nav class="navbar" id="navbar">
+    <div class="navbar-inner">
+      <a href="/" class="navbar-logo">kenny<span>therex</span></a>
+
+      <ul class="navbar-links" id="navbar-links">
+        <li class="navbar-pill" id="navbar-pill" aria-hidden="true"></li>
+        {links.map(l => (
           <li>
             <a
-              href={link.href}
-              aria-current={currentPath === link.href || (link.href !== '/' && currentPath.startsWith(link.href)) ? 'page' : undefined}
+              href={l.href}
+              aria-current={path.startsWith(l.href) ? 'page' : undefined}
             >
-              {link.label}
+              {l.label}
             </a>
           </li>
         ))}
       </ul>
-    </nav>
 
+      <div class="navbar-actions">
+        <a href="/search" class="navbar-icon-btn" aria-current={path === '/search' ? 'page' : undefined} aria-label="Search">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:block;">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+        </a>
+        <button id="theme-toggle" class="navbar-icon-btn" aria-label="Toggle theme">
+          <svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+          </svg>
+          <svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+        <button id="menu-toggle" class="navbar-icon-btn hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+          <span class="hamburger-box">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <div class="mobile-menu" id="mobile-menu">
+      <ul class="mobile-menu-links">
+        {links.map(l => (
+          <li>
+            <a href={l.href} aria-current={path.startsWith(l.href) ? 'page' : undefined}>{l.label}</a>
+          </li>
+        ))}
+        <li>
+          <a href="/search" aria-current={path === '/search' ? 'page' : undefined}>Search</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="site page-enter">
     <main>
       <slot />
     </main>
 
     <footer>
-      <span class="footer-left">© {new Date().getFullYear()} kenneth solomon</span>
-      <div class="footer-links">
-        <a href="https://github.com/syndromelinen" target="_blank" rel="noopener">github</a>
-        <a href="https://app.hackthebox.com/profile/2522807" target="_blank" rel="noopener">htb</a>
-        <a href="/rss.xml">rss</a>
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="/" class="footer-logo">kenny<span>therex</span></a>
+          <p class="footer-tagline">
+            Writing about cybersecurity, programming<br />
+            and the journey.
+          </p>
+        </div>
+        <div class="footer-links">
+          <a href={socials.github} target="_blank" rel="noopener">GitHub</a>
+          <a href={socials.linkedin} target="_blank" rel="noopener">LinkedIn</a>
+          <a href={socials.hackthebox} target="_blank" rel="noopener">HackTheBox</a>
+          <a href={socials.x} target="_blank" rel="noopener">X</a>
+          <a href="/rss.xml">RSS</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© {new Date().getFullYear()} Kenneth Solomon</span>
+        <span>Built with Astro</span>
       </div>
     </footer>
   </div>
+
+  <button id="scroll-top" aria-label="Scroll to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="18 15 12 9 6 15"/>
+    </svg>
+  </button>
+
+  <script>
+    import { animate, inView, stagger } from 'motion';
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const ease = [0.22, 1, 0.36, 1];
+
+    // Cmd/Ctrl+K — jump to search, or focus it if already on a search-enabled page
+    document.addEventListener('keydown', (e) => {
+      const isK = e.key === 'k' || e.key === 'K';
+      if ((e.metaKey || e.ctrlKey) && isK) {
+        e.preventDefault();
+        const input = document.getElementById('search');
+        if (input) {
+          input.focus();
+        } else {
+          window.location.href = '/search';
+        }
+      }
+    });
+
+    // Theme toggle
+    const themeBtn = document.getElementById('theme-toggle');
+    themeBtn?.addEventListener('click', () => {
+      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+      if (isLight) {
+        document.documentElement.removeAttribute('data-theme');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+        localStorage.setItem('theme', 'light');
+      }
+    });
+
+    // Navbar scroll effect
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar?.classList.toggle('scrolled', window.scrollY > 40);
+    }, { passive: true });
+
+    // Scroll to top visibility
+    const scrollBtn = document.getElementById('scroll-top');
+    window.addEventListener('scroll', () => {
+      scrollBtn?.classList.toggle('visible', window.scrollY > 500);
+    }, { passive: true });
+
+    // Reading progress
+    const bar = document.getElementById('reading-progress');
+    if (bar) {
+      window.addEventListener('scroll', () => {
+        const doc = document.documentElement;
+        const pct = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100;
+        bar.style.width = pct + '%';
+      }, { passive: true });
+    }
+
+    // Scroll reveal — Motion One, staggered, respects reduced-motion
+    const revealEls = Array.from(document.querySelectorAll('.reveal-up'));
+    if (reduceMotion) {
+      revealEls.forEach(el => el.classList.add('in-view'));
+    } else {
+      let pending = [];
+      let flushTimer = null;
+      inView(revealEls, (el) => {
+        // skip elements a page's own script already marked visible
+        // (e.g. instantly-rendered search/filter results)
+        if (el.classList.contains('in-view')) return;
+        pending.push(el);
+        clearTimeout(flushTimer);
+        flushTimer = setTimeout(() => {
+          const batch = pending.splice(0);
+          animate(
+            batch,
+            { opacity: [0, 1], y: [24, 0] },
+            { duration: 0.6, delay: stagger(0.06), easing: ease }
+          );
+          batch.forEach(el => el.classList.add('in-view'));
+        }, 16);
+      }, { margin: '0px 0px -80px 0px' });
+    }
+
+    // Navbar pill — slides behind the hovered/active link, Vercel-style
+    const navLinksEl = document.getElementById('navbar-links');
+    const pill = document.getElementById('navbar-pill');
+    if (navLinksEl && pill && !reduceMotion) {
+      const items = Array.from(navLinksEl.querySelectorAll('a'));
+      const activeItem = items.find(a => a.getAttribute('aria-current') === 'page');
+
+      function placePill(target, animated) {
+        const navRect = navLinksEl.getBoundingClientRect();
+        const r = target.getBoundingClientRect();
+        const x = r.left - navRect.left - 12;
+        const w = r.width + 24;
+        if (animated) {
+          animate(pill, { x, width: w, opacity: 1 }, { duration: 0.35, easing: ease });
+        } else {
+          pill.style.transform = `translateX(${x}px)`;
+          pill.style.width = `${w}px`;
+        }
+      }
+
+      if (activeItem) {
+        placePill(activeItem, false);
+        pill.style.opacity = '1';
+      }
+
+      items.forEach(a => {
+        a.addEventListener('mouseenter', () => placePill(a, true));
+      });
+      navLinksEl.addEventListener('mouseleave', () => {
+        if (activeItem) {
+          placePill(activeItem, true);
+        } else {
+          animate(pill, { opacity: 0 }, { duration: 0.2 });
+        }
+      });
+      window.addEventListener('resize', () => {
+        if (activeItem) placePill(activeItem, false);
+      });
+    }
+
+    // Mobile hamburger menu
+    const menuBtn = document.getElementById('menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    let menuOpen = false;
+
+    function closeMenu(animated = true) {
+      if (!menuOpen) return;
+      menuOpen = false;
+      menuBtn?.classList.remove('open');
+      menuBtn?.setAttribute('aria-expanded', 'false');
+      document.body.classList.remove('menu-locked');
+      if (mobileMenu) {
+        if (animated && !reduceMotion) {
+          animate(mobileMenu, { height: 0, opacity: 0 }, { duration: 0.3, easing: [0.4, 0, 0.2, 1] });
+        } else {
+          mobileMenu.style.height = '0px';
+          mobileMenu.style.opacity = '0';
+        }
+      }
+    }
+
+    function openMenu() {
+      menuOpen = true;
+      menuBtn?.classList.add('open');
+      menuBtn?.setAttribute('aria-expanded', 'true');
+      document.body.classList.add('menu-locked');
+      if (mobileMenu) {
+        if (!reduceMotion) {
+          animate(mobileMenu, { height: 'auto', opacity: 1 }, { duration: 0.35, easing: ease });
+        } else {
+          mobileMenu.style.height = 'auto';
+          mobileMenu.style.opacity = '1';
+        }
+      }
+    }
+
+    menuBtn?.addEventListener('click', () => (menuOpen ? closeMenu() : openMenu()));
+    mobileMenu?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => closeMenu()));
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 720) closeMenu(false);
+    });
+
+    // Share button (on post pages) — native share sheet, falls back to copy link
+    const shareBtn = document.getElementById('share-btn');
+    shareBtn?.addEventListener('click', async () => {
+      const shareData = {
+        title: shareBtn.dataset.title || document.title,
+        url: window.location.href,
+      };
+      const label = shareBtn.querySelector('.share-btn-label');
+      try {
+        if (navigator.share) {
+          await navigator.share(shareData);
+        } else {
+          await navigator.clipboard.writeText(shareData.url);
+          if (label) {
+            const original = label.textContent;
+            label.textContent = 'Copied!';
+            shareBtn.classList.add('copied');
+            setTimeout(() => {
+              label.textContent = original;
+              shareBtn.classList.remove('copied');
+            }, 2000);
+          }
+        }
+      } catch (err) {
+        // user dismissed the native share sheet — no-op
+      }
+    });
+
+    // Copy code buttons
+    document.querySelectorAll('pre').forEach(pre => {
+      const btn = document.createElement('button');
+      btn.className = 'copy-btn';
+      btn.textContent = 'copy';
+      btn.addEventListener('click', () => {
+        navigator.clipboard.writeText(pre.querySelector('code')?.textContent || '');
+        btn.textContent = 'copied!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 2000);
+      });
+      pre.style.position = 'relative';
+      pre.appendChild(btn);
+    });
+  </script>
 </body>
 </html>

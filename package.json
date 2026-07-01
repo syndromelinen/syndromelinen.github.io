@@ -1,6 +1,6 @@
 {
   "name": "kennytherex",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "type": "module",
   "scripts": {
     "dev": "astro dev",
@@ -8,9 +8,10 @@
     "preview": "astro preview"
   },
   "dependencies": {
-    "astro": "4.15.0",
-    "@astrojs/mdx": "3.1.0",
-    "@astrojs/rss": "4.0.7",
-    "@astrojs/sitemap": "3.1.6"
+    "astro": "^4.15.0",
+    "@astrojs/mdx": "^3.1.0",
+    "@astrojs/rss": "^4.0.7",
+    "@astrojs/sitemap": "3.1.6",
+    "motion": "^12.42.1"
   }
 }

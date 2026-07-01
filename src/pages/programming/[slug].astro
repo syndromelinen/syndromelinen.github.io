@@ -1,0 +1,23 @@
+---
+import Post from '../../layouts/Post.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('programming');
+  const sorted = posts.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+  return sorted.map((post, i) => ({
+    params: { slug: post.slug },
+    props: { post, prev: sorted[i + 1] || null, next: sorted[i - 1] || null },
+  }));
+}
+
+const { post, prev, next } = Astro.props;
+const { Content, headings } = await post.render();
+const raw = post.body;
+const words = (raw || '').trim().split(/\s+/).length;
+const readingTimeMin = Math.max(1, Math.ceil(words / 200));
+---
+
+<Post frontmatter={post.data} prev={prev} next={next} section="programming" headings={headings} readingTimeMin={readingTimeMin}>
+  <Content />
+</Post>

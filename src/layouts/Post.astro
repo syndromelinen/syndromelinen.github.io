@@ -1,29 +1,87 @@
 ---
 import Base from './Base.astro';
 
-const { frontmatter } = Astro.props;
-const { title, description, date, tag } = frontmatter;
+const { frontmatter, prev, next, section = 'blog', headings = [], readingTimeMin } = Astro.props;
+const { title, description, date, tags = [] } = frontmatter;
 
 const formatted = new Date(date).toLocaleDateString('en-GB', {
-  day: 'numeric', month: 'short', year: 'numeric'
+  day: 'numeric', month: 'long', year: 'numeric'
 });
+
+// only top-level headings (h2/h3) make a useful TOC — deeper ones get noisy
+const tocHeadings = headings.filter((h: { depth: number }) => h.depth >= 2 && h.depth <= 3);
+
+const articleStructuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: title,
+  description,
+  datePublished: date,
+  author: { '@type': 'Person', name: 'Kenneth Solomon' },
+};
 ---
 
-<Base title={title} description={description}>
-  <a href="/blog" class="back-link">← back to blog</a>
+<Base title={title} description={description} showProgress={true}>
+  <script type="application/ld+json" set:html={JSON.stringify(articleStructuredData)} />
+
+  <a href={`/${section}`} class="back-link" style="display:inline-flex;align-items:center;gap:6px;padding-top:88px;padding-bottom:0;font-family:var(--font-mono);font-size:12px;color:var(--muted);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='var(--purple-hover)'" onmouseout="this.style.color='var(--muted)'">
+    ← back
+  </a>
 
   <article>
-    <header class="post-header">
+    <header class="post-header" style="padding-top: 28px;">
       <div class="post-header-meta">
-        <span class={`tag tag-${tag}`}>{tag}</span>
-        <span style="font-family: var(--font-mono); font-size: 11px; color: var(--ink-muted);">{formatted}</span>
+        <div class="post-header-meta-left">
+          <span>{formatted}</span>
+          {readingTimeMin && <span>·</span>}
+          {readingTimeMin && <span>{readingTimeMin} min read</span>}
+          {tags.length > 0 && <span>·</span>}
+          {tags.map((t: string) => <span class="tag">{t}</span>)}
+        </div>
+        <button id="share-btn" class="share-btn" type="button" aria-label="Share this post" data-title={title}>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+          </svg>
+          <span class="share-btn-label">Share</span>
+        </button>
       </div>
       <h1>{title}</h1>
       {description && <p class="post-header-desc">{description}</p>}
     </header>
 
+    {tocHeadings.length > 1 && (
+      <details class="toc">
+        <summary>On this page</summary>
+        <ul>
+          {tocHeadings.map((h: { depth: number; slug: string; text: string }) => (
+            <li class={h.depth === 3 ? 'toc-sub' : ''}>
+              <a href={`#${h.slug}`}>{h.text}</a>
+            </li>
+          ))}
+        </ul>
+      </details>
+    )}
+
     <div class="prose">
       <slot />
     </div>
+
+    {(prev || next) && (
+      <nav class="post-nav">
+        {prev ? (
+          <a href={`/${section}/${prev.slug}`} class="post-nav-item">
+            <div class="post-nav-label">← Previous</div>
+            <div class="post-nav-title">{prev.data.title}</div>
+          </a>
+        ) : <div />}
+        {next ? (
+          <a href={`/${section}/${next.slug}`} class="post-nav-item next">
+            <div class="post-nav-label">Next →</div>
+            <div class="post-nav-title">{next.data.title}</div>
+          </a>
+        ) : <div />}
+      </nav>
+    )}
   </article>
 </Base>

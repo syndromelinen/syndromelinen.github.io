@@ -1,24 +1,35 @@
 import { defineCollection, z } from 'astro:content';
 
-const blog = defineCollection({
+const cybersecurity = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
     description: z.string(),
     date: z.string(),
-    tag: z.enum(['cybersec', 'notes', 'maths', 'life', 'writeup']),
+    tags: z.array(z.string()).optional().default([]),
     draft: z.boolean().optional().default(false),
   }),
 });
 
-const notes = defineCollection({
+const programming = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
-    meta: z.string(),
-    tag: z.enum(['cybersec', 'maths', 'notes', 'writeup']),
-    updated: z.string(),
+    description: z.string(),
+    date: z.string(),
+    tags: z.array(z.string()).optional().default([]),
+    draft: z.boolean().optional().default(false),
   }),
 });
 
-export const collections = { blog, notes };
+const journal = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    date: z.string(),
+    draft: z.boolean().optional().default(false),
+  }),
+});
+
+export const collections = { cybersecurity, programming, journal };
