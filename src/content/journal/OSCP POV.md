@@ -1,7 +1,7 @@
 ---
 title: "Why I'm Not Rushing Into the OSCP"
 description: "My current thoughts on certifications, HTB Academy, and why I'm choosing to build skills before chasing another exam."
-date: 2026-07-01
+date: "2026-07-01"
 tags:
   - Journal
   - Career
