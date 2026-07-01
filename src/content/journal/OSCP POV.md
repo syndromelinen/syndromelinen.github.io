@@ -7,9 +7,9 @@ tags:
   - Career
   - Certifications
   - HTB
-
-draft: false
+  
 ---
+
 
 # Why I'm Not Rushing Into the OSCP
 
@@ -65,18 +65,6 @@ The more I learn, the more I realize how much I still don't know.
 
 And I think that's a healthy mindset to have.
 
----
-title: "Why I'm Not Rushing Into the OSCP"
-description: "My current thoughts on certifications, HTB Academy, and why I'm choosing to build skills before chasing another exam."
-date: 2026-07-01
-tags:
-  - Journal
-  - Career
-  - Certifications
-  - HTB
-
-draft: false
----
 
 # Why I'm Not Rushing Into the OSCP
 
