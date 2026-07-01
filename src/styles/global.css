@@ -89,7 +89,7 @@ body {
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
-  opacity: 0.22;
+  opacity: 0.55;
   transition: opacity 0.4s ease;
   will-change: transform;
 }
@@ -99,9 +99,9 @@ body {
   inset: -10%;
   background-image: url('/images/marble-bg.jpg');
   background-size: cover;
-  background-position: center 30%;
+  background-position: center 25%;
   background-repeat: no-repeat;
-  filter: saturate(0.6) brightness(0.72) blur(36px);
+  filter: saturate(0.85) brightness(0.95) blur(14px);
   animation: marbleDrift 42s ease-in-out infinite alternate;
   will-change: transform;
 }
@@ -110,7 +110,7 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at center, transparent 15%, var(--bg) 78%);
+  background: radial-gradient(ellipse at center, transparent 40%, var(--bg) 100%);
 }
 
 @keyframes marbleDrift {
