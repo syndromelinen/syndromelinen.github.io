@@ -1,76 +1,75 @@
+<div align="center">
+
 # kennytherex
 
-personal site — cybersec, notes, the grind.
-
-## stack
-
-- **astro** — static site generator, blazing fast
-- **mdx** — write posts in markdown
-- **github pages** — free hosting, auto-deploy on push
-
-## local dev
-
-```bash
-npm install
-npm run dev
-# → localhost:4321
+```txt
+public documentary
 ```
 
-## writing a post
+<sub>learning offensive security, one write-up at a time.</sub>
 
-create a file in `src/content/blog/`:
+</div>
 
-```md
----
-title: "your post title"
-description: "one line description"
-date: "2026-07-01"
-tag: "cybersec"   # cybersec | notes | maths | life | writeup
 ---
 
-your content here in markdown.
+## About
+
+This repository contains the source code for my personal website.
+
+It's where I document my journey through cybersecurity, programming, and everything I learn along the way.
+
+Nothing here is static.
+
+As I grow, this repository grows with me.
+
+---
+
+## Stack
+
+```txt
+Astro
+TypeScript
+CSS
+Markdown
+Motion
+GitHub Pages
 ```
 
-that's it. push to main → github actions builds and deploys automatically.
-
-## writing a note
-
-create a file in `src/content/notes/`:
-
-```md
----
-title: "note title"
-meta: "short description shown in the card"
-tag: "cybersec"   # cybersec | maths | notes | writeup
-updated: "2026-07-01"
 ---
 
-note content.
-```
+## Structure
 
-## deploy setup (one-time)
-
-1. push this repo to `syndromelinen.github.io` (or any repo)
-2. go to repo settings → pages → source: **github actions**
-3. every push to main auto-deploys
-
-## structure
-
-```
+```txt
 src/
-  content/
-    blog/        ← your posts (.md files)
-    notes/       ← your notes (.md files)
-  pages/
-    index.astro  ← home
-    blog.astro   ← blog listing with filter+search
-    notes.astro  ← notes grid
-    about.astro  ← about page
-  layouts/
-    Base.astro   ← shared nav + footer + marble bg
-    Post.astro   ← blog post layout
-  styles/
-    global.css   ← all styles (purple marble theme)
-  components/
-    Marble.astro ← animated canvas background
+├── content/
+│   ├── cybersecurity/
+│   ├── journal/
+│   ├── programming/
+│   └── notes/
+│
+├── components/
+├── layouts/
+├── pages/
+└── styles/
 ```
+
+---
+
+## Philosophy
+
+I don't write because I know everything.
+
+I write because I don't.
+
+Every article is a snapshot of what I understand today.
+
+Maybe I'll disagree with myself a year from now.
+
+That's the point.
+
+
+---
+
+https://syndromelinen.github.io
+
+i gotta add this file via git / terminal coz ese me error de rha h
