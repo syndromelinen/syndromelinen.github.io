@@ -69,7 +69,7 @@ body {
 
 body.menu-locked { overflow: hidden; }
 
-/* ── RESET ── */
+
 /* ── RESET ── */
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 html {
