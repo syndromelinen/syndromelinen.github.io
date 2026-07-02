@@ -70,8 +70,13 @@ body {
 body.menu-locked { overflow: hidden; }
 
 /* ── RESET ── */
+/* ── RESET ── */
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  width: 100%;
+}
 body {
   background: var(--bg);
   color: var(--white);
@@ -79,6 +84,8 @@ body {
   font-size: 15px;
   line-height: 1.7;
   overflow-x: hidden;
+  width: 100%;
+  position: relative;
   -webkit-font-smoothing: antialiased;
 }
 
