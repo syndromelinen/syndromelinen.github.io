@@ -1,18 +1,12 @@
 ---
 title: "Git & GitHub Notes"
-description: "A practical reference for Git and GitHub commands, workflows, and best practices."
+description: "..."
 date: "2026-07-18"
 tags:
   - Git
-  - GitHub
-  - Version Control 
-  - Notes
+  
 ---
-
-## Git and GitHub Notes
-
-> **By**: Kenneth Solomon
-
+> **By**: Kenneth Solomon  
 ---
 
 ## Table of Contents
