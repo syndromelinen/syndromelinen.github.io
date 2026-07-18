@@ -1,8 +1,11 @@
 ---
-title: "Git/Github"
-description: "For Reference."
+title: "Git & GitHub Notes"
+description: "A practical reference for Git and GitHub commands, workflows, and best practices."
 date: "2026-07-18"
 tags:
+  - Git
+  - GitHub
+  - Version Control 
   - Notes
 ---
 
