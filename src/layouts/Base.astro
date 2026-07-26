@@ -86,6 +86,10 @@ const structuredData = {
 <body>
   {showProgress && <div id="reading-progress"></div>}
 
+  <div id="crt-overlay" aria-hidden="true">
+    <div id="boot-log"></div>
+  </div>
+
   <Marble />
 
   <nav class="navbar" id="navbar">
@@ -198,18 +202,69 @@ const structuredData = {
       }
     });
 
-    // Theme toggle
+    // Theme toggle — CRT collapse → boot log (entering terminal) → expand
     const themeBtn = document.getElementById('theme-toggle');
+    const crtOverlay = document.getElementById('crt-overlay');
+    const bootLog = document.getElementById('boot-log');
+    const bootLines = ['initializing kernel...', 'loading modules...', 'mounting /dev/terminal...', '[ OK ]'];
+    let themeBusy = false;
+
     themeBtn?.addEventListener('click', () => {
-      const isTerminal = document.documentElement.getAttribute('data-theme') === 'terminal';
-      if (isTerminal) {
-        document.documentElement.removeAttribute('data-theme');
-        localStorage.setItem('theme', 'dark');
-      } else {
+      if (themeBusy) return;
+      const goingTerminal = document.documentElement.getAttribute('data-theme') !== 'terminal';
+
+      if (reduceMotion || !crtOverlay || !bootLog) {
+        applyTheme(goingTerminal);
+        document.dispatchEvent(new CustomEvent('themechange', { detail: { theme: goingTerminal ? 'terminal' : 'dark' } }));
+        return;
+      }
+
+      themeBusy = true;
+      bootLog.innerHTML = '';
+      crtOverlay.classList.remove('crt-expand');
+      // force reflow so the animation restarts cleanly on repeated clicks
+      void crtOverlay.offsetWidth;
+      crtOverlay.classList.add('crt-collapse');
+
+      const collapseMs = 160;
+      const holdMs = goingTerminal ? 260 : 90;
+      const expandMs = 160;
+
+      setTimeout(() => {
+        applyTheme(goingTerminal);
+        document.dispatchEvent(new CustomEvent('themechange', { detail: { theme: goingTerminal ? 'terminal' : 'dark' } }));
+
+        if (goingTerminal) {
+          bootLines.forEach((line, i) => {
+            setTimeout(() => {
+              const row = document.createElement('div');
+              row.textContent = line;
+              bootLog.appendChild(row);
+            }, i * 60);
+          });
+        }
+
+        setTimeout(() => {
+          crtOverlay.classList.remove('crt-collapse');
+          crtOverlay.classList.add('crt-expand');
+          setTimeout(() => {
+            crtOverlay.classList.remove('crt-expand');
+            bootLog.innerHTML = '';
+            themeBusy = false;
+          }, expandMs);
+        }, holdMs);
+      }, collapseMs);
+    });
+
+    function applyTheme(goingTerminal: boolean) {
+      if (goingTerminal) {
         document.documentElement.setAttribute('data-theme', 'terminal');
         localStorage.setItem('theme', 'terminal');
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+        localStorage.setItem('theme', 'dark');
       }
-    });
+    }
 
     // Navbar scroll effect
     const navbar = document.getElementById('navbar');

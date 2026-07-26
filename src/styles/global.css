@@ -98,6 +98,49 @@
   [data-theme="terminal"] body { animation: none; }
 }
 
+/* CRT power-off/on transition overlay — plays on theme toggle */
+#crt-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  pointer-events: none;
+  background: #000;
+  opacity: 0;
+  transform: scaleY(1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#crt-overlay.crt-collapse {
+  animation: crt-collapse 0.16s ease-in forwards;
+}
+
+#crt-overlay.crt-expand {
+  animation: crt-expand 0.16s ease-out forwards;
+}
+
+@keyframes crt-collapse {
+  0% { opacity: 0; transform: scaleY(1); }
+  70% { opacity: 1; transform: scaleY(0.02); }
+  100% { opacity: 1; transform: scaleY(0.006); }
+}
+
+@keyframes crt-expand {
+  0% { opacity: 1; transform: scaleY(0.006); }
+  30% { opacity: 1; transform: scaleY(0.02); }
+  100% { opacity: 0; transform: scaleY(1); }
+}
+
+#boot-log {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  line-height: 1.8;
+  color: #fff;
+  text-align: left;
+  white-space: pre;
+}
+
 body {
   transition: background-color var(--transition), color var(--transition);
 }

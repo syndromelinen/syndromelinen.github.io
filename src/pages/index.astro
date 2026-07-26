@@ -130,4 +130,34 @@ function fmt(d: string) {
     </div>
   </section>
 
+  <script>
+    const heading = document.querySelector<HTMLElement>('.hero h1');
+    const fullHTML = heading?.innerHTML ?? '';
+    const fullText = heading?.textContent ?? '';
+    let typeTimer: ReturnType<typeof setTimeout> | null = null;
+
+    document.addEventListener('themechange', (e: Event) => {
+      if (!heading) return;
+      const detail = (e as CustomEvent).detail as { theme?: string } | undefined;
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (typeTimer) clearTimeout(typeTimer);
+
+      if (detail?.theme === 'terminal' && !reduceMotion) {
+        heading.textContent = '';
+        let i = 0;
+        const step = () => {
+          heading.textContent = fullText.slice(0, i + 1);
+          i++;
+          if (i < fullText.length) {
+            typeTimer = setTimeout(step, 55);
+          }
+        };
+        step();
+      } else {
+        heading.innerHTML = fullHTML;
+      }
+    });
+  </script>
+
 </Base>
