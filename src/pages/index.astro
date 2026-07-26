@@ -2,6 +2,8 @@
 import Base from '../layouts/Base.astro';
 import { getCollection } from 'astro:content';
 import { readingTimeMinutes } from '../utils/readingTime';
+import { Image } from 'astro:assets';
+import avatar from '../assets/avatar.jpg';
 
 const cyber = await getCollection('cybersecurity', p => !p.data.draft);
 const prog = await getCollection('programming', p => !p.data.draft);
@@ -21,20 +23,37 @@ function fmt(d: string) {
   <!-- HERO -->
   <section class="hero">
     <div class="hero-glow"></div>
-    <div class="hero-label">public documentary</div>
     <h1>kennytherex<span class="dot">.</span></h1>
     <div class="hero-stack">
       <span>Cybersecurity.</span> Programming. Thoughts.
     </div>
     <p class="hero-desc">
-      Building my career in offensive security,<br />
-      one write-up at a time.
+      Just a cybersec guy — mostly offensive security.
     </p>
     <div class="hero-btns">
       <a href="/journal" class="btn btn-primary">
         Read Journal <span class="btn-arrow">→</span>
       </a>
       <a href="/cybersecurity" class="btn btn-secondary">Browse Writeups</a>
+    </div>
+
+    <button class="scroll-cue" aria-label="Scroll to content" onclick="document.getElementById('about-preview').scrollIntoView({behavior:'smooth'})">
+      <span class="scroll-cue-line"></span>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
+    </button>
+  </section>
+
+  <!-- ABOUT PREVIEW -->
+  <section class="about-preview reveal-up" id="about-preview">
+    <Image src={avatar} alt="Kenneth Solomon" width={64} height={64} loading="eager" class="about-preview-avatar" />
+    <div class="about-preview-text">
+      <p>
+        I'm <strong>Kenneth</strong>, <strong>kennytherex</strong> online — I study cybersecurity,
+        build things, and write about what I learn.
+      </p>
+      <a href="/about" class="view-all">More about me →</a>
     </div>
   </section>
 

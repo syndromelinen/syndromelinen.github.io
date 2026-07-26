@@ -11,6 +11,13 @@
   if (canvas && ctx) {
     let w = 0, h = 0;
     let stars: { x: number; y: number; r: number; baseAlpha: number; phase: number; speed: number; driftX: number; driftY: number }[] = [];
+    let starRgb = '242, 242, 240';
+
+    function readStarColor() {
+      starRgb = getComputedStyle(document.documentElement).getPropertyValue('--star-rgb').trim() || starRgb;
+    }
+    readStarColor();
+    new MutationObserver(readStarColor).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
     function resize() {
       w = canvas!.width = window.innerWidth;
@@ -40,7 +47,7 @@
         const a = s.baseAlpha + Math.sin(t * 0.001 * s.speed + s.phase) * 0.2;
         ctx!.beginPath();
         ctx!.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-        ctx!.fillStyle = `rgba(242,242,240,${Math.max(0, a)})`;
+        ctx!.fillStyle = `rgba(${starRgb},${Math.max(0, a)})`;
         ctx!.fill();
       }
       if (!reduceMotion) requestAnimationFrame(tick);

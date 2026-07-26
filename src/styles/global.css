@@ -14,6 +14,7 @@
   --muted: #8A8A85;
   --muted2: #55554F;
   --navbar-bg: rgba(5, 5, 5, 0.8);
+  --star-rgb: 242, 242, 240;
   --font-head: 'Space Grotesk', sans-serif;
   --font-body: 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
@@ -56,12 +57,11 @@
   --muted: #63635E;
   --muted2: #8A8A85;
   --navbar-bg: rgba(250, 250, 250, 0.85);
+  --star-rgb: 20, 20, 20;
   --shadow-sm: 0 2px 8px rgba(20,20,20,0.06);
   --shadow-md: 0 8px 28px rgba(20,20,20,0.08);
   --shadow-lg: 0 16px 48px rgba(20,20,20,0.10);
 }
-
-[data-theme="light"] #marble { opacity: 0; }
 
 body {
   transition: background-color var(--transition), color var(--transition);
@@ -365,17 +365,6 @@ body {
   filter: blur(40px);
 }
 
-.hero-label {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--purple);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  margin-bottom: 20px;
-  opacity: 0;
-  animation: heroIn 0.6s ease 0.1s forwards;
-}
-
 .hero h1 {
   font-family: var(--font-head);
   font-size: clamp(44px, 8vw, 64px);
@@ -425,6 +414,72 @@ body {
 @keyframes heroIn {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── SCROLL CUE ── */
+.scroll-cue {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  color: var(--muted2);
+  cursor: pointer;
+  padding: 8px;
+  opacity: 0;
+  animation: heroIn 0.7s ease 0.55s forwards, scrollCueBob 2.2s ease-in-out 1.2s infinite;
+  transition: color var(--transition-fast);
+}
+
+.scroll-cue:hover { color: var(--muted); }
+
+.scroll-cue-line {
+  width: 1px;
+  height: 28px;
+  background: var(--border);
+}
+
+@keyframes scrollCueBob {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(6px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-cue { animation: none; opacity: 1; }
+}
+
+/* ── ABOUT PREVIEW (homepage) ── */
+.about-preview {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 40px 0 44px;
+}
+
+.about-preview-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.about-preview-text p {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.about-preview-text .view-all { margin-top: 8px; display: inline-flex; }
+
+@media (max-width: 560px) {
+  .about-preview { flex-direction: column; align-items: flex-start; gap: 16px; }
 }
 
 /* ── BUTTONS ── */
