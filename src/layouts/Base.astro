@@ -12,11 +12,11 @@ const {
 const path = Astro.url.pathname;
 
 const links = [
-  { href: '/journal', label: 'Journal' },
-  { href: '/cybersecurity', label: 'Cybersecurity' },
-  { href: '/programming', label: 'Programming' },
-  { href: '/notes', label: 'Notes' },
-  { href: '/about', label: 'About' },
+  { href: '/journal', label: 'Journal', icon: '<path d="M4 5.5C4 4.7 4.7 4 5.5 4H11v16H5.5C4.7 20 4 19.3 4 18.5V5.5Z"/><path d="M20 5.5C20 4.7 19.3 4 18.5 4H13v16h5.5c.8 0 1.5-.7 1.5-1.5V5.5Z"/>' },
+  { href: '/cybersecurity', label: 'Cybersecurity', icon: '<path d="M12 3l7 3v5c0 5-3.4 8.7-7 10-3.6-1.3-7-5-7-10V6l7-3Z"/><path d="M9.5 12l2 2 3.5-3.5"/>' },
+  { href: '/programming', label: 'Programming', icon: '<polyline points="9 6 3 12 9 18"/><polyline points="15 6 21 12 15 18"/>' },
+  { href: '/notes', label: 'Notes', icon: '<rect x="5" y="3" width="14" height="18" rx="2"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="12" y2="16"/>' },
+  { href: '/about', label: 'About', icon: '<circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7"/>' },
 ];
 
 const ogImage = new URL(image, Astro.site ?? Astro.url.origin).href;
@@ -95,20 +95,6 @@ const structuredData = {
     <div class="navbar-inner">
       <a href="/" class="navbar-logo">kenny<span>therex</span></a>
 
-      <ul class="navbar-links" id="navbar-links">
-        <li class="navbar-pill" id="navbar-pill" aria-hidden="true"></li>
-        {links.map(l => (
-          <li>
-            <a
-              href={l.href}
-              aria-current={path.startsWith(l.href) ? 'page' : undefined}
-            >
-              {l.label}
-            </a>
-          </li>
-        ))}
-      </ul>
-
       <div class="navbar-actions">
         <a href="/search" class="navbar-icon-btn" aria-current={path === '/search' ? 'page' : undefined} aria-label="Search">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:block;">
@@ -127,27 +113,32 @@ const structuredData = {
             <line x1="12" y1="18" x2="20" y2="18"/>
           </svg>
         </button>
-        <button id="menu-toggle" class="navbar-icon-btn hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
-          <span class="hamburger-box">
-            <span class="hamburger-line"></span>
-            <span class="hamburger-line"></span>
-            <span class="hamburger-line"></span>
-          </span>
+        <button id="nav-grid-toggle" class="navbar-icon-btn" aria-label="Open navigation" aria-expanded="false" aria-controls="nav-grid-panel">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <circle cx="5" cy="5" r="1.7"/><circle cx="12" cy="5" r="1.7"/><circle cx="19" cy="5" r="1.7"/>
+            <circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/>
+            <circle cx="5" cy="19" r="1.7"/><circle cx="12" cy="19" r="1.7"/><circle cx="19" cy="19" r="1.7"/>
+          </svg>
         </button>
       </div>
-    </div>
 
-    <div class="mobile-menu" id="mobile-menu">
-      <ul class="mobile-menu-links">
-        {links.map(l => (
-          <li>
-            <a href={l.href} aria-current={path.startsWith(l.href) ? 'page' : undefined}>{l.label}</a>
-          </li>
-        ))}
-        <li>
-          <a href="/search" aria-current={path === '/search' ? 'page' : undefined}>Search</a>
-        </li>
-      </ul>
+      <div class="nav-grid-panel" id="nav-grid-panel" role="menu">
+        <div class="nav-grid">
+          {links.map(l => (
+            <a
+              href={l.href}
+              class="nav-grid-item"
+              role="menuitem"
+              aria-current={path.startsWith(l.href) ? 'page' : undefined}
+            >
+              <span class="nav-grid-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" set:html={l.icon} />
+              </span>
+              <span class="nav-grid-label">{l.label}</span>
+            </a>
+          ))}
+        </div>
+      </div>
     </div>
   </nav>
 
@@ -319,86 +310,34 @@ const structuredData = {
       }, { margin: '0px 0px -80px 0px' });
     }
 
-    // Navbar pill — slides behind the hovered/active link, Vercel-style
-    const navLinksEl = document.getElementById('navbar-links');
-    const pill = document.getElementById('navbar-pill');
-    if (navLinksEl && pill && !reduceMotion) {
-      const items = Array.from(navLinksEl.querySelectorAll('a'));
-      const activeItem = items.find(a => a.getAttribute('aria-current') === 'page');
+    // Nav grid dropdown
+    const gridBtn = document.getElementById('nav-grid-toggle');
+    const gridPanel = document.getElementById('nav-grid-panel');
+    let gridOpen = false;
 
-      function placePill(target, animated) {
-        const navRect = navLinksEl.getBoundingClientRect();
-        const r = target.getBoundingClientRect();
-        const x = r.left - navRect.left - 12;
-        const w = r.width + 24;
-        if (animated) {
-          animate(pill, { x, width: w, opacity: 1 }, { duration: 0.35, easing: ease });
-        } else {
-          pill.style.transform = `translateX(${x}px)`;
-          pill.style.width = `${w}px`;
-        }
-      }
-
-      if (activeItem) {
-        placePill(activeItem, false);
-        pill.style.opacity = '1';
-      }
-
-      items.forEach(a => {
-        a.addEventListener('mouseenter', () => placePill(a, true));
-      });
-      navLinksEl.addEventListener('mouseleave', () => {
-        if (activeItem) {
-          placePill(activeItem, true);
-        } else {
-          animate(pill, { opacity: 0 }, { duration: 0.2 });
-        }
-      });
-      window.addEventListener('resize', () => {
-        if (activeItem) placePill(activeItem, false);
-      });
+    function closeGrid() {
+      if (!gridOpen) return;
+      gridOpen = false;
+      gridBtn?.setAttribute('aria-expanded', 'false');
+      gridPanel?.classList.remove('open');
     }
 
-    // Mobile hamburger menu
-    const menuBtn = document.getElementById('menu-toggle');
-    const mobileMenu = document.getElementById('mobile-menu');
-    let menuOpen = false;
-
-    function closeMenu(animated = true) {
-      if (!menuOpen) return;
-      menuOpen = false;
-      menuBtn?.classList.remove('open');
-      menuBtn?.setAttribute('aria-expanded', 'false');
-      document.body.classList.remove('menu-locked');
-      if (mobileMenu) {
-        if (animated && !reduceMotion) {
-          animate(mobileMenu, { height: 0, opacity: 0 }, { duration: 0.3, easing: [0.4, 0, 0.2, 1] });
-        } else {
-          mobileMenu.style.height = '0px';
-          mobileMenu.style.opacity = '0';
-        }
-      }
+    function openGrid() {
+      gridOpen = true;
+      gridBtn?.setAttribute('aria-expanded', 'true');
+      gridPanel?.classList.add('open');
     }
 
-    function openMenu() {
-      menuOpen = true;
-      menuBtn?.classList.add('open');
-      menuBtn?.setAttribute('aria-expanded', 'true');
-      document.body.classList.add('menu-locked');
-      if (mobileMenu) {
-        if (!reduceMotion) {
-          animate(mobileMenu, { height: 'auto', opacity: 1 }, { duration: 0.35, easing: ease });
-        } else {
-          mobileMenu.style.height = 'auto';
-          mobileMenu.style.opacity = '1';
-        }
-      }
-    }
-
-    menuBtn?.addEventListener('click', () => (menuOpen ? closeMenu() : openMenu()));
-    mobileMenu?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => closeMenu()));
-    window.addEventListener('resize', () => {
-      if (window.innerWidth > 720) closeMenu(false);
+    gridBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      gridOpen ? closeGrid() : openGrid();
+    });
+    gridPanel?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => closeGrid()));
+    document.addEventListener('click', (e) => {
+      if (gridOpen && gridPanel && !gridPanel.contains(e.target as Node) && e.target !== gridBtn) closeGrid();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeGrid();
     });
 
     // Share button (on post pages) — native share sheet, falls back to copy link
