@@ -79,7 +79,7 @@ const structuredData = {
     (function () {
       const saved = localStorage.getItem('theme');
       const theme = saved || 'dark';
-      if (theme === 'light') document.documentElement.setAttribute('data-theme', 'light');
+      if (theme === 'terminal') document.documentElement.setAttribute('data-theme', 'terminal');
     })();
   </script>
 </head>
@@ -118,7 +118,8 @@ const structuredData = {
             <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
           </svg>
           <svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            <polyline points="4 6 10 12 4 18"/>
+            <line x1="12" y1="18" x2="20" y2="18"/>
           </svg>
         </button>
         <button id="menu-toggle" class="navbar-icon-btn hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
@@ -198,13 +199,13 @@ const structuredData = {
     // Theme toggle
     const themeBtn = document.getElementById('theme-toggle');
     themeBtn?.addEventListener('click', () => {
-      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-      if (isLight) {
+      const isTerminal = document.documentElement.getAttribute('data-theme') === 'terminal';
+      if (isTerminal) {
         document.documentElement.removeAttribute('data-theme');
         localStorage.setItem('theme', 'dark');
       } else {
-        document.documentElement.setAttribute('data-theme', 'light');
-        localStorage.setItem('theme', 'light');
+        document.documentElement.setAttribute('data-theme', 'terminal');
+        localStorage.setItem('theme', 'terminal');
       }
     });
 

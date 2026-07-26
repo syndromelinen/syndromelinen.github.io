@@ -4,6 +4,7 @@ declare module 'astro:content' {
 			Content: import('astro').MarkdownInstance<{}>['Content'];
 			headings: import('astro').MarkdownHeading[];
 			remarkPluginFrontmatter: Record<string, any>;
+			components: import('astro').MDXInstance<{}>['components'];
 		}>;
 	}
 }
@@ -150,57 +151,64 @@ declare module 'astro:content' {
 	>;
 
 	type ContentEntryMap = {
-		"blog": {
-"airtouch-writeup.md": {
-	id: "airtouch-writeup.md";
-  slug: "airtouch-writeup";
+		"cybersecurity": Record<string, {
+  id: string;
+  slug: string;
   body: string;
-  collection: "blog";
-  data: InferEntrySchema<"blog">
+  collection: "cybersecurity";
+  data: InferEntrySchema<"cybersecurity">;
+  render(): Render[".md"];
+}>;
+"journal": {
+"Day 1.md": {
+	id: "Day 1.md";
+  slug: "day-1";
+  body: string;
+  collection: "journal";
+  data: InferEntrySchema<"journal">
 } & { render(): Render[".md"] };
-"on-rebuilding.md": {
-	id: "on-rebuilding.md";
-  slug: "on-rebuilding";
+"OSCP POV.md": {
+	id: "OSCP POV.md";
+  slug: "oscp-pov";
   body: string;
-  collection: "blog";
-  data: InferEntrySchema<"blog">
+  collection: "journal";
+  data: InferEntrySchema<"journal">
 } & { render(): Render[".md"] };
-"week-01-grind.md": {
-	id: "week-01-grind.md";
-  slug: "week-01-grind";
+"just-another-rainy-day.md": {
+	id: "just-another-rainy-day.md";
+  slug: "just-another-rainy-day";
   body: string;
-  collection: "blog";
-  data: InferEntrySchema<"blog">
-} & { render(): Render[".md"] };
-"why-i-study-maths.md": {
-	id: "why-i-study-maths.md";
-  slug: "why-i-study-maths";
-  body: string;
-  collection: "blog";
-  data: InferEntrySchema<"blog">
+  collection: "journal";
+  data: InferEntrySchema<"journal">
 } & { render(): Render[".md"] };
 };
 "notes": {
-"api-security.md": {
-	id: "api-security.md";
-  slug: "api-security";
-  body: string;
-  collection: "notes";
-  data: InferEntrySchema<"notes">
-} & { render(): Render[".md"] };
-"nmap-enumeration.md": {
-	id: "nmap-enumeration.md";
-  slug: "nmap-enumeration";
+"Git Notes.md": {
+	id: "Git Notes.md";
+  slug: "git-notes";
   body: string;
   collection: "notes";
   data: InferEntrySchema<"notes">
 } & { render(): Render[".md"] };
 };
+"programming": Record<string, {
+  id: string;
+  slug: string;
+  body: string;
+  collection: "programming";
+  data: InferEntrySchema<"programming">;
+  render(): Render[".md"];
+}>;
 
 	};
 
 	type DataEntryMap = {
-		
+		"blog": Record<string, {
+  id: string;
+  collection: "blog";
+  data: any;
+}>;
+
 	};
 
 	type AnyEntryMap = ContentEntryMap & DataEntryMap;
