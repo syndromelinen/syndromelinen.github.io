@@ -86,9 +86,8 @@ const structuredData = {
 <body>
   {showProgress && <div id="reading-progress"></div>}
 
-  <div id="crt-overlay" aria-hidden="true">
-    <div id="boot-log"></div>
-  </div>
+  <div id="crt-overlay" aria-hidden="true"></div>
+  <div id="boot-log" aria-hidden="true"></div>
 
   <Marble />
 
@@ -221,32 +220,39 @@ const structuredData = {
 
       themeBusy = true;
       bootLog.innerHTML = '';
+      bootLog.classList.remove('visible');
       crtOverlay.classList.remove('crt-expand');
       // force reflow so the animation restarts cleanly on repeated clicks
       void crtOverlay.offsetWidth;
       crtOverlay.classList.add('crt-collapse');
 
-      const collapseMs = 160;
-      const holdMs = goingTerminal ? 260 : 90;
-      const expandMs = 160;
+      const collapseMs = 220;
+      const lineDelay = 300;
+      const readPauseMs = 500;
+      const holdMs = goingTerminal ? bootLines.length * lineDelay + readPauseMs : 180;
+      const expandMs = 220;
 
       setTimeout(() => {
         applyTheme(goingTerminal);
         document.dispatchEvent(new CustomEvent('themechange', { detail: { theme: goingTerminal ? 'terminal' : 'dark' } }));
 
         if (goingTerminal) {
+          bootLog.classList.add('visible');
           bootLines.forEach((line, i) => {
             setTimeout(() => {
               const row = document.createElement('div');
+              row.className = 'boot-line';
               row.textContent = line;
               bootLog.appendChild(row);
-            }, i * 60);
+              requestAnimationFrame(() => row.classList.add('in'));
+            }, i * lineDelay);
           });
         }
 
         setTimeout(() => {
           crtOverlay.classList.remove('crt-collapse');
           crtOverlay.classList.add('crt-expand');
+          bootLog.classList.remove('visible');
           setTimeout(() => {
             crtOverlay.classList.remove('crt-expand');
             bootLog.innerHTML = '';
