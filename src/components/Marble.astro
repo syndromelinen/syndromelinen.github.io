@@ -10,14 +10,16 @@
 
   if (canvas && ctx) {
     let w = 0, h = 0;
-    let stars: { x: number; y: number; r: number; baseAlpha: number; phase: number; speed: number; driftX: number; driftY: number }[] = [];
+    let stars: { x: number; y: number; r: number; baseAlpha: number; phase: number; speed: number; driftX: number; driftY: number; isGlyph: boolean; char: string }[] = [];
     let starRgb = '242, 242, 240';
+    let isTerminal = document.documentElement.getAttribute('data-theme') === 'terminal';
 
-    function readStarColor() {
+    function readTheme() {
       starRgb = getComputedStyle(document.documentElement).getPropertyValue('--star-rgb').trim() || starRgb;
+      isTerminal = document.documentElement.getAttribute('data-theme') === 'terminal';
     }
-    readStarColor();
-    new MutationObserver(readStarColor).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    readTheme();
+    new MutationObserver(readTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
     function resize() {
       w = canvas!.width = window.innerWidth;
@@ -32,6 +34,8 @@
         speed: Math.random() * 0.4 + 0.08,
         driftX: (Math.random() - 0.5) * 0.02,
         driftY: (Math.random() - 0.5) * 0.02,
+        isGlyph: Math.random() < 0.1,
+        char: Math.random() < 0.5 ? '$' : '>',
       }));
     }
 
@@ -45,10 +49,18 @@
         if (s.y < 0) s.y = h;
         if (s.y > h) s.y = 0;
         const a = s.baseAlpha + Math.sin(t * 0.001 * s.speed + s.phase) * 0.2;
-        ctx!.beginPath();
-        ctx!.arc(s.x, s.y, s.r, 0, Math.PI * 2);
         ctx!.fillStyle = `rgba(${starRgb},${Math.max(0, a)})`;
-        ctx!.fill();
+        if (isTerminal && s.isGlyph) {
+          const fontSize = 10 + s.r * 8;
+          ctx!.font = `${fontSize}px "JetBrains Mono", monospace`;
+          ctx!.textAlign = 'center';
+          ctx!.textBaseline = 'middle';
+          ctx!.fillText(s.char, s.x, s.y);
+        } else {
+          ctx!.beginPath();
+          ctx!.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+          ctx!.fill();
+        }
       }
       if (!reduceMotion) requestAnimationFrame(tick);
     }

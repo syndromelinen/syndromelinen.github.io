@@ -195,6 +195,24 @@ body {
 
 .navbar-logo span { color: var(--purple); }
 
+/* terminal mode: blinking prompt cursor after the logo */
+.navbar-logo::after {
+  content: '';
+}
+[data-theme="terminal"] .navbar-logo::after {
+  content: '_';
+  margin-left: 3px;
+  color: var(--white);
+  animation: terminal-cursor-blink 1s steps(1, end) infinite;
+}
+@keyframes terminal-cursor-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="terminal"] .navbar-logo::after { animation: none; }
+}
+
 /* ── NAV LINKS + PILL INDICATOR ── */
 .navbar-links {
   position: relative;
