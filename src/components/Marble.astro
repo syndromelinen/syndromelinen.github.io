@@ -1,34 +1,57 @@
 ---
 ---
 <div id="marble">
-  <div id="marble-img"></div>
+  <canvas id="starfield"></canvas>
 </div>
 <script>
-  const wrap = document.getElementById('marble');
-  const img = document.getElementById('marble-img');
+  const canvas = document.getElementById('starfield') as HTMLCanvasElement | null;
+  const ctx = canvas?.getContext('2d');
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // mouse parallax — smoothed toward target so it never snaps
-  let mx = 0, my = 0, tmx = 0, tmy = 0;
+  if (canvas && ctx) {
+    let w = 0, h = 0;
+    let stars: { x: number; y: number; r: number; baseAlpha: number; phase: number; speed: number; driftX: number; driftY: number }[] = [];
 
-  window.addEventListener('pointermove', (e) => {
-    tmx = (e.clientX / window.innerWidth - 0.5) * 2;
-    tmy = (e.clientY / window.innerHeight - 0.5) * 2;
-  }, { passive: true });
-
-  function tick() {
-    // soft catch-up, never snaps to the cursor
-    mx += (tmx - mx) * 0.015;
-    my += (tmy - my) * 0.015;
-
-    if (wrap) {
-      wrap.style.transform = `translate3d(${mx * 16}px, ${my * 12}px, 0)`;
+    function resize() {
+      w = canvas!.width = window.innerWidth;
+      h = canvas!.height = window.innerHeight;
+      const count = Math.floor((w * h) / 6000);
+      stars = Array.from({ length: count }, () => ({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: Math.random() * 1.1 + 0.2,
+        baseAlpha: Math.random() * 0.5 + 0.15,
+        phase: Math.random() * Math.PI * 2,
+        speed: Math.random() * 0.4 + 0.08,
+        driftX: (Math.random() - 0.5) * 0.02,
+        driftY: (Math.random() - 0.5) * 0.02,
+      }));
     }
 
-    if (!reduceMotion) requestAnimationFrame(tick);
-  }
+    function tick(t: number) {
+      ctx!.clearRect(0, 0, w, h);
+      for (const s of stars) {
+        s.x += s.driftX;
+        s.y += s.driftY;
+        if (s.x < 0) s.x = w;
+        if (s.x > w) s.x = 0;
+        if (s.y < 0) s.y = h;
+        if (s.y > h) s.y = 0;
+        const a = s.baseAlpha + Math.sin(t * 0.001 * s.speed + s.phase) * 0.2;
+        ctx!.beginPath();
+        ctx!.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx!.fillStyle = `rgba(242,242,240,${Math.max(0, a)})`;
+        ctx!.fill();
+      }
+      if (!reduceMotion) requestAnimationFrame(tick);
+    }
 
-  if (!reduceMotion) {
-    requestAnimationFrame(tick);
+    window.addEventListener('resize', resize);
+    resize();
+    if (reduceMotion) {
+      tick(0);
+    } else {
+      requestAnimationFrame(tick);
+    }
   }
 </script>
