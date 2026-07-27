@@ -61,7 +61,7 @@
   --shadow-sm: 0 2px 8px rgba(0,0,0,0.5);
   --shadow-md: 0 8px 28px rgba(0,0,0,0.6);
   --shadow-lg: 0 16px 48px rgba(0,0,0,0.7);
-  --font-head: var(--font-mono);
+  --font-head: 'VT323', var(--font-mono);
   --font-body: var(--font-mono);
 }
 
@@ -463,9 +463,8 @@ body {
 
 .hero h1 .dot { color: var(--purple); }
 
-/* terminal mode: swap the hero headline to a raw CRT-terminal display font */
+/* terminal mode: hero headline runs larger since VT323 reads small */
 [data-theme="terminal"] .hero h1 {
-  font-family: 'VT323', var(--font-mono);
   font-weight: 400;
   letter-spacing: 0.01em;
   font-size: clamp(30px, 11vw, 80px);
