@@ -136,6 +136,21 @@ function fmt(d: string) {
     const fullText = heading?.textContent ?? '';
     let typeTimer: ReturnType<typeof setTimeout> | null = null;
 
+    function typeOut() {
+      if (!heading) return;
+      if (typeTimer) clearTimeout(typeTimer);
+      heading.textContent = '';
+      let i = 0;
+      const step = () => {
+        heading.textContent = fullText.slice(0, i + 1);
+        i++;
+        if (i < fullText.length) {
+          typeTimer = setTimeout(step, 55);
+        }
+      };
+      step();
+    }
+
     document.addEventListener('themechange', (e: Event) => {
       if (!heading) return;
       const detail = (e as CustomEvent).detail as { theme?: string } | undefined;
@@ -144,20 +159,20 @@ function fmt(d: string) {
       if (typeTimer) clearTimeout(typeTimer);
 
       if (detail?.theme === 'terminal' && !reduceMotion) {
-        heading.textContent = '';
-        let i = 0;
-        const step = () => {
-          heading.textContent = fullText.slice(0, i + 1);
-          i++;
-          if (i < fullText.length) {
-            typeTimer = setTimeout(step, 55);
-          }
-        };
-        step();
+        typeOut();
       } else {
         heading.innerHTML = fullHTML;
       }
     });
+
+    // Page loaded directly into terminal mode (saved from a previous visit) —
+    // still play the typing effect once the hero's own fade-in has settled.
+    if (heading && document.documentElement.getAttribute('data-theme') === 'terminal') {
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!reduceMotion) {
+        setTimeout(typeOut, 750);
+      }
+    }
   </script>
 
 </Base>
