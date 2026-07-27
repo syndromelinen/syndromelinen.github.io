@@ -89,6 +89,9 @@ const structuredData = {
   <div id="crt-overlay" aria-hidden="true"></div>
   <div id="boot-log" aria-hidden="true"></div>
 
+  <div id="cursor-dot" aria-hidden="true"></div>
+  <div id="cursor-ring" aria-hidden="true"></div>
+
   <Marble />
 
   <nav class="navbar" id="navbar">
@@ -191,6 +194,47 @@ const structuredData = {
         }
       }
     });
+
+    // Custom cursor — desktop / fine-pointer devices only
+    const isDesktopPointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    if (isDesktopPointer) {
+      document.documentElement.classList.add('custom-cursor-on');
+      const cursorDot = document.getElementById('cursor-dot');
+      const cursorRing = document.getElementById('cursor-ring');
+
+      window.addEventListener('mousemove', (e) => {
+        if (cursorDot) {
+          cursorDot.style.left = `${e.clientX}px`;
+          cursorDot.style.top = `${e.clientY}px`;
+        }
+        if (cursorRing) {
+          cursorRing.style.left = `${e.clientX}px`;
+          cursorRing.style.top = `${e.clientY}px`;
+        }
+      });
+
+      document.addEventListener('mouseover', (e) => {
+        const target = e.target as HTMLElement;
+        if (target.closest('a, button, .nav-grid-item, .navbar-icon-btn')) {
+          cursorRing?.classList.add('hovering');
+        }
+      });
+      document.addEventListener('mouseout', (e) => {
+        const target = e.target as HTMLElement;
+        if (target.closest('a, button, .nav-grid-item, .navbar-icon-btn')) {
+          cursorRing?.classList.remove('hovering');
+        }
+      });
+
+      document.addEventListener('mouseleave', () => {
+        cursorDot?.style.setProperty('opacity', '0');
+        cursorRing?.style.setProperty('opacity', '0');
+      });
+      document.addEventListener('mouseenter', () => {
+        cursorDot?.style.setProperty('opacity', '0.85');
+        cursorRing?.style.setProperty('opacity', '0.85');
+      });
+    }
 
     // Theme toggle — CRT collapse → boot log (entering terminal) → expand
     const themeBtn = document.getElementById('theme-toggle');

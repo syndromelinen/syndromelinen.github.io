@@ -159,6 +159,52 @@
   transform: translateY(0);
 }
 
+/* ── CUSTOM CURSOR (desktop / mouse only) ── */
+#cursor-dot, #cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 10050;
+  transform: translate(-50%, -50%);
+  display: none;
+  opacity: 0;
+}
+
+#cursor-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--purple);
+  transition: opacity 0.2s ease;
+}
+
+#cursor-ring {
+  width: 30px;
+  height: 30px;
+  border: 1.5px solid var(--purple);
+  box-shadow: 0 0 14px var(--border-glow), 0 0 4px var(--purple);
+  transition: left 0.13s ease-out, top 0.13s ease-out, width 0.18s ease, height 0.18s ease, opacity 0.2s ease;
+}
+
+#cursor-ring.hovering {
+  width: 52px;
+  height: 52px;
+  border-color: var(--purple-hover);
+  box-shadow: 0 0 22px var(--border-glow), 0 0 8px var(--purple-hover);
+}
+
+html.custom-cursor-on #cursor-dot,
+html.custom-cursor-on #cursor-ring {
+  display: block;
+  opacity: 0.85;
+}
+
+html.custom-cursor-on,
+html.custom-cursor-on * {
+  cursor: none !important;
+}
+
 body {
   transition: background-color var(--transition), color var(--transition);
 }
