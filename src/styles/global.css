@@ -110,11 +110,11 @@
 }
 
 #crt-overlay.crt-collapse {
-  animation: crt-power-off 0.22s ease-in forwards;
+  animation: crt-power-off 0.38s ease-in forwards;
 }
 
 #crt-overlay.crt-expand {
-  animation: crt-power-on 0.22s ease-out forwards;
+  animation: crt-power-on 0.38s ease-out forwards;
 }
 
 @keyframes crt-power-off {
@@ -502,7 +502,7 @@ body {
 
 [data-theme="terminal"] .hero-glow {
   opacity: 0;
-  transition-delay: 2s;
+  transition-delay: 3.2s;
 }
 
 .hero h1 {

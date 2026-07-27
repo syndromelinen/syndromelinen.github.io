@@ -261,11 +261,11 @@ const structuredData = {
       void crtOverlay.offsetWidth;
       crtOverlay.classList.add('crt-collapse');
 
-      const collapseMs = 220;
-      const lineDelay = 300;
-      const readPauseMs = 500;
-      const holdMs = goingTerminal ? bootLines.length * lineDelay + readPauseMs : 180;
-      const expandMs = 220;
+      const collapseMs = 380;
+      const lineDelay = 420;
+      const readPauseMs = 750;
+      const holdMs = goingTerminal ? bootLines.length * lineDelay + readPauseMs : 260;
+      const expandMs = 380;
 
       setTimeout(() => {
         applyTheme(goingTerminal);
