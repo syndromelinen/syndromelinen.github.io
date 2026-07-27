@@ -69,12 +69,3 @@ That's pretty much it for this week.
 Over the next few days I'll start publishing the write-ups I've been sitting on for a while, along with more programming posts and my personal notes. There's still a long way to go, but I'm enjoying every step of the journey.
 
 Until we meet again.
-
-<div align="center">
-  <img
-    src="/images/Until-we-meet-again.png"
-    alt="Until We Meet Again"
-    width="700"
-  />
-</div>
-
