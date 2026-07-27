@@ -98,7 +98,7 @@
   [data-theme="terminal"] body { animation: none; }
 }
 
-/* Screen fade-to-black transition — plays on theme toggle */
+/* CRT power-off/on transition — screen collapses to a line and back, like an old TV */
 #crt-overlay {
   position: fixed;
   inset: 0;
@@ -106,24 +106,27 @@
   pointer-events: none;
   background: #000;
   opacity: 0;
+  transform: scaleY(1);
 }
 
 #crt-overlay.crt-collapse {
-  animation: screen-fade-in 0.22s ease-in forwards;
+  animation: crt-power-off 0.22s ease-in forwards;
 }
 
 #crt-overlay.crt-expand {
-  animation: screen-fade-out 0.22s ease-out forwards;
+  animation: crt-power-on 0.22s ease-out forwards;
 }
 
-@keyframes screen-fade-in {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+@keyframes crt-power-off {
+  0% { opacity: 0; transform: scaleY(1); }
+  55% { opacity: 1; transform: scaleY(0.2); }
+  100% { opacity: 1; transform: scaleY(0.006); }
 }
 
-@keyframes screen-fade-out {
-  0% { opacity: 1; }
-  100% { opacity: 0; }
+@keyframes crt-power-on {
+  0% { opacity: 1; transform: scaleY(0.006); }
+  45% { opacity: 1; transform: scaleY(0.2); }
+  100% { opacity: 0; transform: scaleY(1); }
 }
 
 /* Boot log sits on its own layer, above the collapsing screen — never scaled, so text stays legible the whole time */
