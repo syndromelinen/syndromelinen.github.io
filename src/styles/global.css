@@ -497,7 +497,10 @@ body {
   transition: opacity 1.4s ease;
 }
 
-[data-theme="terminal"] .hero-glow { opacity: 0; }
+[data-theme="terminal"] .hero-glow {
+  opacity: 0;
+  transition-delay: 2s;
+}
 
 .hero h1 {
   font-family: var(--font-head);
