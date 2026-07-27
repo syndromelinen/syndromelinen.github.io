@@ -221,23 +221,6 @@ html {
   scroll-behavior: smooth;
   overflow-x: hidden;
   width: 100%;
-  scrollbar-width: thin;
-  scrollbar-color: var(--border) var(--bg);
-}
-
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-::-webkit-scrollbar-track {
-  background: var(--bg);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 999px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--muted2);
 }
 body {
   background: var(--bg);
@@ -377,24 +360,6 @@ body {
 [data-theme="terminal"] #theme-toggle .icon-moon { display: block; }
 
 #nav-grid-toggle[aria-expanded="true"] { color: var(--purple-hover); background: var(--surface2); }
-
-/* ── BACKGROUND MUSIC (terminal mode only) ── */
-#yt-player-holder {
-  position: fixed;
-  top: -9999px;
-  left: -9999px;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-}
-
-#music-toggle { display: none; }
-[data-theme="terminal"] #music-toggle { display: flex; }
-
-#music-toggle .icon-playing { display: none; }
-#music-toggle[aria-pressed="true"] .icon-muted { display: none; }
-#music-toggle[aria-pressed="true"] .icon-playing { display: block; }
-#music-toggle[aria-pressed="true"] { color: var(--purple-hover); }
 
 /* ── NAV DROPDOWN (vertical list, sidebar-style) ── */
 .nav-grid-panel {

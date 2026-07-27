@@ -1,5 +1,4 @@
 ---
-import { ViewTransitions } from 'astro:transitions';
 import Marble from '../components/Marble.astro';
 import '../styles/global.css';
 
@@ -83,25 +82,19 @@ const structuredData = {
       if (theme === 'terminal') document.documentElement.setAttribute('data-theme', 'terminal');
     })();
   </script>
-
-  <script src="https://www.youtube.com/iframe_api" is:inline></script>
-
-  <ViewTransitions />
 </head>
 <body>
   {showProgress && <div id="reading-progress"></div>}
 
-  <div id="crt-overlay" aria-hidden="true" transition:persist></div>
-  <div id="boot-log" aria-hidden="true" transition:persist></div>
+  <div id="crt-overlay" aria-hidden="true"></div>
+  <div id="boot-log" aria-hidden="true"></div>
 
-  <div id="yt-player-holder" aria-hidden="true" transition:persist><div id="yt-player"></div></div>
+  <div id="cursor-dot" aria-hidden="true"></div>
+  <div id="cursor-ring" aria-hidden="true"></div>
 
-  <div id="cursor-dot" aria-hidden="true" transition:persist></div>
-  <div id="cursor-ring" aria-hidden="true" transition:persist></div>
+  <Marble />
 
-  <Marble transition:persist />
-
-  <nav class="navbar" id="navbar" transition:persist>
+  <nav class="navbar" id="navbar">
     <div class="navbar-inner">
       <a href="/" class="navbar-logo">kenny<span>therex</span></a>
 
@@ -121,18 +114,6 @@ const structuredData = {
           <svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="4 6 10 12 4 18"/>
             <line x1="12" y1="18" x2="20" y2="18"/>
-          </svg>
-        </button>
-        <button id="music-toggle" class="navbar-icon-btn" aria-label="Play background music" aria-pressed="false">
-          <svg class="icon-muted" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M11 5 6 9H2v6h4l5 4V5Z"/>
-            <line x1="23" y1="9" x2="17" y2="15"/>
-            <line x1="17" y1="9" x2="23" y2="15"/>
-          </svg>
-          <svg class="icon-playing" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M11 5 6 9H2v6h4l5 4V5Z"/>
-            <path d="M15.5 8.5a5 5 0 0 1 0 7"/>
-            <path d="M18.5 6a9 9 0 0 1 0 12"/>
           </svg>
         </button>
         <button id="nav-grid-toggle" class="navbar-icon-btn" aria-label="Open navigation" aria-expanded="false" aria-controls="nav-grid-panel">
@@ -188,7 +169,7 @@ const structuredData = {
     </footer>
   </div>
 
-  <button id="scroll-top" aria-label="Scroll to top" onclick="window.scrollTo({top:0,behavior:'smooth'})" transition:persist>
+  <button id="scroll-top" aria-label="Scroll to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <polyline points="18 15 12 9 6 15"/>
     </svg>
@@ -211,44 +192,6 @@ const structuredData = {
         } else {
           window.location.href = '/search';
         }
-      }
-    });
-
-    // Background music (terminal mode) — hidden YouTube player, audio only
-    let ytPlayer: any = null;
-    let ytReady = false;
-    const musicBtn = document.getElementById('music-toggle');
-
-    (window as any).onYouTubeIframeAPIReady = function () {
-      ytPlayer = new (window as any).YT.Player('yt-player', {
-        height: '1',
-        width: '1',
-        videoId: 'VJ3u6zBcVSA',
-        playerVars: {
-          autoplay: 0,
-          controls: 0,
-          disablekb: 1,
-          fs: 0,
-          loop: 1,
-          playlist: 'VJ3u6zBcVSA',
-        },
-        events: {
-          onReady: () => { ytReady = true; },
-        },
-      });
-    };
-
-    musicBtn?.addEventListener('click', () => {
-      if (!ytReady || !ytPlayer) return;
-      const isPlaying = musicBtn.getAttribute('aria-pressed') === 'true';
-      if (isPlaying) {
-        ytPlayer.pauseVideo();
-        musicBtn.setAttribute('aria-pressed', 'false');
-        musicBtn.setAttribute('aria-label', 'Play background music');
-      } else {
-        ytPlayer.playVideo();
-        musicBtn.setAttribute('aria-pressed', 'true');
-        musicBtn.setAttribute('aria-label', 'Mute background music');
       }
     });
 
@@ -364,19 +307,54 @@ const structuredData = {
       }
     }
 
-    // Navbar scroll effect — navbar persists across navigations, safe to bind once
+    // Navbar scroll effect
     const navbar = document.getElementById('navbar');
     window.addEventListener('scroll', () => {
       navbar?.classList.toggle('scrolled', window.scrollY > 40);
     }, { passive: true });
 
-    // Scroll to top visibility — button persists, safe to bind once
+    // Scroll to top visibility
     const scrollBtn = document.getElementById('scroll-top');
     window.addEventListener('scroll', () => {
       scrollBtn?.classList.toggle('visible', window.scrollY > 500);
     }, { passive: true });
 
-    // Nav grid dropdown — navbar persists, safe to bind once
+    // Reading progress
+    const bar = document.getElementById('reading-progress');
+    if (bar) {
+      window.addEventListener('scroll', () => {
+        const doc = document.documentElement;
+        const pct = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100;
+        bar.style.width = pct + '%';
+      }, { passive: true });
+    }
+
+    // Scroll reveal — Motion One, staggered, respects reduced-motion
+    const revealEls = Array.from(document.querySelectorAll('.reveal-up'));
+    if (reduceMotion) {
+      revealEls.forEach(el => el.classList.add('in-view'));
+    } else {
+      let pending = [];
+      let flushTimer = null;
+      inView(revealEls, (el) => {
+        // skip elements a page's own script already marked visible
+        // (e.g. instantly-rendered search/filter results)
+        if (el.classList.contains('in-view')) return;
+        pending.push(el);
+        clearTimeout(flushTimer);
+        flushTimer = setTimeout(() => {
+          const batch = pending.splice(0);
+          animate(
+            batch,
+            { opacity: [0, 1], y: [24, 0] },
+            { duration: 0.6, delay: stagger(0.06), easing: ease }
+          );
+          batch.forEach(el => el.classList.add('in-view'));
+        }, 16);
+      }, { margin: '0px 0px -80px 0px' });
+    }
+
+    // Nav grid dropdown
     const gridBtn = document.getElementById('nav-grid-toggle');
     const gridPanel = document.getElementById('nav-grid-panel');
     let gridOpen = false;
@@ -406,98 +384,47 @@ const structuredData = {
       if (e.key === 'Escape') closeGrid();
     });
 
-    // ── Everything below touches page content or nav "active" state, both of
-    // which change on every navigation. The navbar/cursor/player now persist
-    // across client-side nav (see transition:persist above), so this script
-    // only runs once per session — re-run this block on astro:page-load,
-    // which fires after the very first load AND after every page swap.
-    document.addEventListener('astro:page-load', () => {
-      // Keep the navbar's "active" link in sync with the current URL
-      const path = window.location.pathname;
-      document.querySelectorAll('#navbar a.navbar-icon-btn[href], #navbar a.nav-grid-item[href]').forEach((a) => {
-        const href = a.getAttribute('href') || '';
-        const isActive = href === '/' ? path === '/' : path.startsWith(href);
-        if (isActive) a.setAttribute('aria-current', 'page');
-        else a.removeAttribute('aria-current');
-      });
-
-      // Reading progress
-      const bar = document.getElementById('reading-progress');
-      if (bar) {
-        const onScroll = () => {
-          const doc = document.documentElement;
-          const pct = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100;
-          bar.style.width = pct + '%';
-        };
-        window.addEventListener('scroll', onScroll, { passive: true });
-        onScroll();
-      }
-
-      // Scroll reveal — Motion One, staggered, respects reduced-motion
-      const revealEls = Array.from(document.querySelectorAll('.reveal-up'));
-      if (reduceMotion) {
-        revealEls.forEach(el => el.classList.add('in-view'));
-      } else {
-        let pending: Element[] = [];
-        let flushTimer: ReturnType<typeof setTimeout> | null = null;
-        inView(revealEls, (el) => {
-          if (el.classList.contains('in-view')) return;
-          pending.push(el);
-          clearTimeout(flushTimer as ReturnType<typeof setTimeout>);
-          flushTimer = setTimeout(() => {
-            const batch = pending.splice(0);
-            animate(
-              batch,
-              { opacity: [0, 1], y: [24, 0] },
-              { duration: 0.6, delay: stagger(0.06), easing: ease }
-            );
-            batch.forEach(el => el.classList.add('in-view'));
-          }, 16);
-        }, { margin: '0px 0px -80px 0px' });
-      }
-
-      // Share button (on post pages) — native share sheet, falls back to copy link
-      const shareBtn = document.getElementById('share-btn');
-      shareBtn?.addEventListener('click', async () => {
-        const shareData = {
-          title: shareBtn.dataset.title || document.title,
-          url: window.location.href,
-        };
-        const label = shareBtn.querySelector('.share-btn-label');
-        try {
-          if (navigator.share) {
-            await navigator.share(shareData);
-          } else {
-            await navigator.clipboard.writeText(shareData.url);
-            if (label) {
-              const original = label.textContent;
-              label.textContent = 'Copied!';
-              shareBtn.classList.add('copied');
-              setTimeout(() => {
-                label.textContent = original;
-                shareBtn.classList.remove('copied');
-              }, 2000);
-            }
+    // Share button (on post pages) — native share sheet, falls back to copy link
+    const shareBtn = document.getElementById('share-btn');
+    shareBtn?.addEventListener('click', async () => {
+      const shareData = {
+        title: shareBtn.dataset.title || document.title,
+        url: window.location.href,
+      };
+      const label = shareBtn.querySelector('.share-btn-label');
+      try {
+        if (navigator.share) {
+          await navigator.share(shareData);
+        } else {
+          await navigator.clipboard.writeText(shareData.url);
+          if (label) {
+            const original = label.textContent;
+            label.textContent = 'Copied!';
+            shareBtn.classList.add('copied');
+            setTimeout(() => {
+              label.textContent = original;
+              shareBtn.classList.remove('copied');
+            }, 2000);
           }
-        } catch (err) {
-          // user dismissed the native share sheet — no-op
         }
-      });
+      } catch (err) {
+        // user dismissed the native share sheet — no-op
+      }
+    });
 
-      // Copy code buttons
-      document.querySelectorAll('pre').forEach(pre => {
-        const btn = document.createElement('button');
-        btn.className = 'copy-btn';
-        btn.textContent = 'copy';
-        btn.addEventListener('click', () => {
-          navigator.clipboard.writeText(pre.querySelector('code')?.textContent || '');
-          btn.textContent = 'copied!';
-          btn.classList.add('copied');
-          setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 2000);
-        });
-        pre.style.position = 'relative';
-        pre.appendChild(btn);
+    // Copy code buttons
+    document.querySelectorAll('pre').forEach(pre => {
+      const btn = document.createElement('button');
+      btn.className = 'copy-btn';
+      btn.textContent = 'copy';
+      btn.addEventListener('click', () => {
+        navigator.clipboard.writeText(pre.querySelector('code')?.textContent || '');
+        btn.textContent = 'copied!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 2000);
       });
+      pre.style.position = 'relative';
+      pre.appendChild(btn);
     });
   </script>
 </body>
