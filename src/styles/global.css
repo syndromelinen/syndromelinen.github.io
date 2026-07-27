@@ -463,6 +463,31 @@ body {
 
 .hero h1 .dot { color: var(--purple); }
 
+/* terminal mode: swap the hero headline to a raw CRT-terminal display font */
+[data-theme="terminal"] .hero h1 {
+  font-family: 'VT323', var(--font-mono);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  font-size: clamp(72px, 10vw, 130px);
+}
+
+@media (min-width: 1100px) {
+  [data-theme="terminal"] .hero h1 { font-size: clamp(96px, 8vw, 150px); }
+}
+
+/* terminal mode: blinking cursor stays after the heading, always running */
+.hero h1::after {
+  content: '';
+}
+[data-theme="terminal"] .hero h1::after {
+  content: '_';
+  margin-left: 6px;
+  animation: terminal-cursor-blink 1s steps(1, end) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="terminal"] .hero h1::after { animation: none; }
+}
+
 .hero-stack {
   font-family: var(--font-head);
   font-size: clamp(18px, 3vw, 24px);
