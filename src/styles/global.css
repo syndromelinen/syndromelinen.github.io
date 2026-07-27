@@ -525,7 +525,7 @@ body {
 }
 
 @media (min-width: 1100px) {
-  [data-theme="terminal"] .hero h1 { font-size: clamp(96px, 8vw, 150px); }
+  [data-theme="terminal"] .hero h1 { font-size: clamp(56px, 5vw, 88px); }
 }
 
 /* terminal mode: blinking cursor stays after the heading, always running */
@@ -539,6 +539,19 @@ body {
 }
 @media (prefers-reduced-motion: reduce) {
   [data-theme="terminal"] .hero h1::after { animation: none; }
+}
+
+/* terminal mode: blinking cursor after "Thoughts." in the subheading */
+.thoughts-word::after {
+  content: '';
+}
+[data-theme="terminal"] .thoughts-word::after {
+  content: '_';
+  margin-left: 3px;
+  animation: terminal-cursor-blink 1s steps(1, end) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="terminal"] .thoughts-word::after { animation: none; }
 }
 
 .hero-stack {
@@ -555,6 +568,22 @@ body {
 .hero-stack span {
   color: var(--white);
   transition: color 0.2s;
+}
+
+.thoughts-word::after {
+  content: '';
+}
+
+@media (min-width: 1100px) {
+  [data-theme="terminal"] .thoughts-word::after {
+    content: '_';
+    margin-left: 4px;
+    animation: terminal-cursor-blink 1s steps(1, end) infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thoughts-word::after { animation: none; }
 }
 
 .hero-desc {
