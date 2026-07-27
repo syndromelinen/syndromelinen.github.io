@@ -98,7 +98,7 @@
   [data-theme="terminal"] body { animation: none; }
 }
 
-/* CRT power-off/on transition overlay — plays on theme toggle */
+/* Screen fade-to-black transition — plays on theme toggle */
 #crt-overlay {
   position: fixed;
   inset: 0;
@@ -106,27 +106,24 @@
   pointer-events: none;
   background: #000;
   opacity: 0;
-  transform: scaleY(1);
 }
 
 #crt-overlay.crt-collapse {
-  animation: crt-collapse 0.22s ease-in forwards;
+  animation: screen-fade-in 0.22s ease-in forwards;
 }
 
 #crt-overlay.crt-expand {
-  animation: crt-expand 0.22s ease-out forwards;
+  animation: screen-fade-out 0.22s ease-out forwards;
 }
 
-@keyframes crt-collapse {
-  0% { opacity: 0; transform: scaleY(1); }
-  70% { opacity: 1; transform: scaleY(0.02); }
-  100% { opacity: 1; transform: scaleY(0.006); }
+@keyframes screen-fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
 }
 
-@keyframes crt-expand {
-  0% { opacity: 1; transform: scaleY(0.006); }
-  30% { opacity: 1; transform: scaleY(0.02); }
-  100% { opacity: 0; transform: scaleY(1); }
+@keyframes screen-fade-out {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
 }
 
 /* Boot log sits on its own layer, above the collapsing screen — never scaled, so text stays legible the whole time */
@@ -311,17 +308,17 @@ body {
 
 #nav-grid-toggle[aria-expanded="true"] { color: var(--purple-hover); background: var(--surface2); }
 
-/* ── NAV GRID DROPDOWN ── */
+/* ── NAV DROPDOWN (vertical list, sidebar-style) ── */
 .nav-grid-panel {
   position: absolute;
   top: calc(100% + 10px);
   right: 0;
-  width: 264px;
+  width: 208px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
-  padding: 10px;
+  padding: 6px;
   opacity: 0;
   transform: translateY(-6px) scale(0.97);
   transform-origin: top right;
@@ -337,17 +334,17 @@ body {
 }
 
 .nav-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-direction: column;
   gap: 2px;
 }
 
 .nav-grid-item {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  gap: 8px;
-  padding: 14px 6px;
+  gap: 10px;
+  padding: 9px 10px;
   border-radius: var(--radius);
   text-decoration: none;
   color: var(--muted);
@@ -355,17 +352,15 @@ body {
 }
 
 .nav-grid-item:hover { background: var(--surface2); color: var(--white); }
-.nav-grid-item[aria-current="page"] { color: var(--white); }
-.nav-grid-item[aria-current="page"] .nav-grid-icon { border-color: var(--border-glow); }
+.nav-grid-item[aria-current="page"] { color: var(--white); background: var(--purple-dim); }
+.nav-grid-item[aria-current="page"] .nav-grid-icon { color: var(--purple-hover); }
 
 .nav-grid-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-full);
-  border: 1px solid var(--border);
+  width: 18px;
+  height: 18px;
   color: inherit;
   flex-shrink: 0;
 }
@@ -373,9 +368,8 @@ body {
 .nav-grid-icon svg { display: block; }
 
 .nav-grid-label {
-  font-size: 11px;
+  font-size: 13.5px;
   font-family: var(--font-body);
-  text-align: center;
   line-height: 1.2;
 }
 
