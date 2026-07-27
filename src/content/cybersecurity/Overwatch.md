@@ -1,8 +1,9 @@
 ---
 title: "Overwatch — HackTheBox Writeup"
-description: "Chaining SMB anonymous access, .NET reverse engineering, MSSQL linked server abuse, NTLM relay, and WCF command injection to root a medium HTB machine."
-date: 2026-07-28
-tags: ["hackthebox", "active-directory", "mssql", "privilege-escalation"]
+description: "Chaining SMB anonymous access, .NET reverse engineering, MSSQL linked server abuse, NTLM relay via Responder, and WCF command injection to root a medium HackTheBox machine."
+date: "2026-07-28"
+tags: ["hackthebox", "active-directory", "mssql", "privilege-escalation", "responder"]
+draft: false
 ---
 
 # Overwatch — HackTheBox Writeup
@@ -320,4 +321,3 @@ This box chained together a nice variety of real-world misconfigurations:
 4. **An internal WCF SOAP service with no input validation**, running as a privileged context, allowed command injection through a parameter that was passed unsanitized into process execution — a straightforward but effective local privesc.
 
 Takeaways for defenders: disable anonymous SMB access, never ship credentials inside binaries (use a secrets manager / DPAPI / managed identity instead), lock down linked server trust relationships and DNS write permissions for service accounts, and validate/sanitize every parameter that reaches a shell — even on "internal only" services.
-
