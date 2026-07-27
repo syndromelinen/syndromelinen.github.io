@@ -1,6 +1,16 @@
+---
+title: "Overwatch — HackTheBox Writeup"
+description: "Chaining SMB anonymous access, .NET reverse engineering, MSSQL linked server abuse, NTLM relay, and WCF command injection to root a medium HTB machine."
+date: 2026-07-28
+tags: ["hackthebox", "active-directory", "mssql", "privilege-escalation"]
+---
+
 # Overwatch — HackTheBox Writeup
 
 **Target:** `10.129.244.81` (`overwatch.htb`)
+...
+
+# Overwatch — HackTheBox Writeup
 **Difficulty:** Medium
 **Techniques:** SMB anonymous enumeration → .NET assembly reverse engineering → MSSQL linked server abuse → NTLM relay via Responder → WCF SOAP command injection → local privilege escalation
 
