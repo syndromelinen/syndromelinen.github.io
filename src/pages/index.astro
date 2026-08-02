@@ -1,7 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
 import { getCollection } from 'astro:content';
-import { readingTimeMinutes } from '../utils/readingTime';
 import { Image } from 'astro:assets';
 import avatar from '../assets/avatar.jpg';
 
@@ -12,10 +11,6 @@ const notes = await getCollection('notes', p => !p.data.draft);
 const maths = await getCollection('maths', p => !p.data.draft);
 const random = await getCollection('random', p => !p.data.draft);
 
-const latestCyber = cyber.sort((a,b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()).slice(0,3);
-const latestProg = prog.sort((a,b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()).slice(0,3);
-const latestJournal = journal.sort((a,b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()).slice(0,3);
-
 function fmt(d: string) {
   return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 }
@@ -23,6 +18,17 @@ function fmt(d: string) {
 function postLabel(n: number) {
   return `${n} ${n === 1 ? 'post' : 'posts'}`;
 }
+
+const recentPosts = [
+  ...journal.map(p => ({ slug: p.slug, section: 'journal', date: p.data.date, title: p.data.title, description: p.data.description })),
+  ...cyber.map(p => ({ slug: p.slug, section: 'cybersecurity', date: p.data.date, title: p.data.title, description: p.data.description })),
+  ...prog.map(p => ({ slug: p.slug, section: 'programming', date: p.data.date, title: p.data.title, description: p.data.description })),
+  ...notes.map(p => ({ slug: p.slug, section: 'notes', date: p.data.date, title: p.data.title, description: p.data.description })),
+  ...maths.map(p => ({ slug: p.slug, section: 'maths', date: p.data.date, title: p.data.title, description: p.data.description })),
+  ...random.map(p => ({ slug: p.slug, section: 'random', date: p.data.date, title: p.data.title, description: p.data.description })),
+]
+  .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  .slice(0, 6);
 
 const categories = [
   {
@@ -113,72 +119,27 @@ const categories = [
 
   <hr class="divider" />
 
-  <!-- LATEST JOURNAL -->
+  <!-- RECENT POSTS -->
   <section class="section-block reveal-up">
     <div class="section-header">
-      <span class="section-title">Latest Journal</span>
-      <a href="/journal" class="view-all">View all →</a>
+      <span class="section-title">Recent Posts</span>
+      <a href="/search" class="view-all">View all →</a>
     </div>
-    <div class="timeline">
-      {latestJournal.map(post => (
-        <a href={`/journal/${post.slug}`} class="timeline-item reveal-up">
-          <div class="timeline-date">{fmt(post.data.date)}</div>
-          <div class="timeline-title">{post.data.title}</div>
-          <div class="timeline-desc">{post.data.description}</div>
-        </a>
-      ))}
-    </div>
-  </section>
-
-  <!-- LATEST CYBERSECURITY -->
-  <section class="section-block reveal-up">
-    <div class="section-header">
-      <span class="section-title">Latest Cybersecurity</span>
-      <a href="/cybersecurity" class="view-all">View all →</a>
-    </div>
-    <div class="cards-grid">
-      {latestCyber.map(post => (
-        <a href={`/cybersecurity/${post.slug}`} class="blog-card reveal-up">
-          <div class="card-meta">
-            <span class="card-date">{fmt(post.data.date)}</span>
-            <span class="card-dot">·</span>
-            <span class="card-reading">{readingTimeMinutes(post.body)} min read</span>
-          </div>
-          <div class="card-title">{post.data.title}</div>
-          <div class="card-desc">{post.data.description}</div>
-          <div class="card-footer">
-            <div class="card-tags">
-              {post.data.tags.slice(0,3).map((t: string) => <span class="tag">{t}</span>)}
-            </div>
-            <span class="card-read">Read <span class="btn-arrow">→</span></span>
-          </div>
-        </a>
-      ))}
-    </div>
-  </section>
-
-  <!-- LATEST PROGRAMMING -->
-  <section class="section-block reveal-up">
-    <div class="section-header">
-      <span class="section-title">Latest Programming</span>
-      <a href="/programming" class="view-all">View all →</a>
-    </div>
-    <div class="cards-grid">
-      {latestProg.map(post => (
-        <a href={`/programming/${post.slug}`} class="blog-card reveal-up">
-          <div class="card-meta">
-            <span class="card-date">{fmt(post.data.date)}</span>
-            <span class="card-dot">·</span>
-            <span class="card-reading">{readingTimeMinutes(post.body)} min read</span>
-          </div>
-          <div class="card-title">{post.data.title}</div>
-          <div class="card-desc">{post.data.description}</div>
-          <div class="card-footer">
-            <div class="card-tags">
-              {post.data.tags.slice(0,3).map((t: string) => <span class="tag">{t}</span>)}
-            </div>
-            <span class="card-read">Read <span class="btn-arrow">→</span></span>
-          </div>
+    <div class="recent-stack">
+      {recentPosts.map((post, i) => (
+        <a href={`/${post.section}/${post.slug}`} class="recent-card reveal-up" style={`--i:${i}`}>
+          <span class="recent-node">
+            <span class="recent-node-dot"></span>
+          </span>
+          <span class="recent-card-body">
+            <span class="recent-card-meta">
+              <span class="recent-card-section">{post.section}</span>
+              <span class="card-dot">·</span>
+              <span class="card-date">{fmt(post.date)}</span>
+            </span>
+            <span class="card-title">{post.title}</span>
+            <span class="card-desc">{post.description}</span>
+          </span>
         </a>
       ))}
     </div>

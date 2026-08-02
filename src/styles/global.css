@@ -1536,6 +1536,106 @@ footer {
 .contact-social-btn svg { display: block; transition: transform var(--transition-fast); }
 .contact-social-btn:hover svg { transform: scale(1.1); }
 
+/* ── RECENT POSTS (space stack) ── */
+.recent-stack {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.recent-stack::before {
+  content: '';
+  position: absolute;
+  left: 15px;
+  top: 6px;
+  bottom: 6px;
+  width: 1px;
+  background: linear-gradient(to bottom, var(--purple), var(--border) 80%, transparent);
+}
+
+.recent-card {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  padding: 18px 16px 18px 4px;
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+
+.recent-card:hover { background: var(--purple-dim); transform: translateX(4px); }
+
+.recent-node {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  width: 24px;
+  display: flex;
+  justify-content: center;
+  padding-top: 5px;
+}
+
+.recent-node-dot {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--purple);
+  box-shadow: 0 0 0 4px var(--bg), 0 0 10px var(--purple);
+  transition: box-shadow var(--transition-fast), background var(--transition-fast), transform var(--transition-fast);
+}
+
+.recent-node-dot::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1px solid var(--purple);
+  opacity: 0;
+  animation: recentPulse 2.8s ease-out infinite;
+  animation-delay: calc(var(--i, 0) * 0.35s);
+}
+
+@keyframes recentPulse {
+  0% { transform: scale(0.6); opacity: 0.6; }
+  100% { transform: scale(2.1); opacity: 0; }
+}
+
+.recent-card:hover .recent-node-dot {
+  background: var(--purple-hover);
+  box-shadow: 0 0 0 4px var(--bg), 0 0 16px var(--purple-hover);
+  transform: scale(1.25);
+}
+
+.recent-card-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.recent-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 7px;
+}
+
+.recent-card-section {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--purple);
+  transition: color var(--transition-fast);
+}
+
+.recent-card:hover .recent-card-section { color: var(--purple-hover); }
+
+@media (prefers-reduced-motion: reduce) {
+  .recent-node-dot::after { animation: none; }
+}
+
 /* ── SCROLL REVEAL ── */
 .reveal-up {
   opacity: 0;
