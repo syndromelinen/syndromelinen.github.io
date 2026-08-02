@@ -1342,12 +1342,20 @@ footer {
 /* ── CATEGORIES ── */
 .category-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
   gap: var(--space-3);
+}
+
+@media (min-width: 480px) {
+  .category-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (min-width: 640px) {
   .category-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 479px) {
+  .category-card { min-height: 140px; }
 }
 
 .category-card {
