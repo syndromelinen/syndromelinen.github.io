@@ -6,12 +6,16 @@ export async function GET(context) {
   const prog = await getCollection('programming', p => !p.data.draft);
   const journal = await getCollection('journal', p => !p.data.draft);
   const notes = await getCollection('notes', p => !p.data.draft);
+  const maths = await getCollection('maths', p => !p.data.draft);
+  const random = await getCollection('random', p => !p.data.draft);
 
   const all = [
     ...cyber.map(p => ({ ...p, section: 'cybersecurity' })),
     ...prog.map(p => ({ ...p, section: 'programming' })),
     ...journal.map(p => ({ ...p, section: 'journal' })),
     ...notes.map(p => ({ ...p, section: 'notes' })),
+    ...maths.map(p => ({ ...p, section: 'maths' })),
+    ...random.map(p => ({ ...p, section: 'random' })),
   ].sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
 
   return rss({

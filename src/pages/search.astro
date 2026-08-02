@@ -6,25 +6,29 @@ const cyber = await getCollection('cybersecurity', p => !p.data.draft);
 const prog = await getCollection('programming', p => !p.data.draft);
 const journal = await getCollection('journal', p => !p.data.draft);
 const notes = await getCollection('notes', p => !p.data.draft);
+const maths = await getCollection('maths', p => !p.data.draft);
+const random = await getCollection('random', p => !p.data.draft);
 
 const all = [
   ...cyber.map(p => ({ slug: p.slug, section: 'cybersecurity', ...p.data, tags: p.data.tags ?? [] })),
   ...prog.map(p => ({ slug: p.slug, section: 'programming', ...p.data, tags: p.data.tags ?? [] })),
   ...journal.map(p => ({ slug: p.slug, section: 'journal', ...p.data, tags: [] })),
   ...notes.map(p => ({ slug: p.slug, section: 'notes', ...p.data, tags: p.data.tags ?? [] })),
+  ...maths.map(p => ({ slug: p.slug, section: 'maths', ...p.data, tags: p.data.tags ?? [] })),
+  ...random.map(p => ({ slug: p.slug, section: 'random', ...p.data, tags: p.data.tags ?? [] })),
 ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
 const postsJSON = JSON.stringify(all);
 ---
 
-<Base title="search" description="Search across journal, cybersecurity, programming, and notes.">
+<Base title="search" description="Search across journal, cybersecurity, programming, notes, maths, and random.">
   <div style="padding-top: 88px;">
     <div class="section-title" style="margin-bottom: 8px;">Search</div>
     <h1 style="font-family: var(--font-head); font-size: 32px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 10px;">
       Find anything.
     </h1>
     <p style="color: var(--muted); margin-bottom: 40px; max-width: 440px;">
-      Search across journal, cybersecurity, programming, and notes at once.
+      Search across journal, cybersecurity, programming, notes, maths, and random at once.
     </p>
 
     <div class="search-wrap">
@@ -40,6 +44,8 @@ const postsJSON = JSON.stringify(all);
       <button class="tag-btn" data-section="cybersecurity">cybersecurity</button>
       <button class="tag-btn" data-section="programming">programming</button>
       <button class="tag-btn" data-section="notes">notes</button>
+      <button class="tag-btn" data-section="maths">maths</button>
+      <button class="tag-btn" data-section="random">random</button>
     </div>
 
     <div class="cards-grid" id="posts"></div>
