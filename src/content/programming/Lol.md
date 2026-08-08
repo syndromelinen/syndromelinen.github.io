@@ -14,7 +14,7 @@ tags:
 
 # Building VulnKen: My Own Deliberately Broken Web App
 
-I've done API-RTA before — the vulnerable e-commerce API I built to mess around with BOLA, BFLA, IDOR, price manipulation, JWT forgery, SSRF into fake AWS metadata. Had some experience with it going in, and that's what led me to build this one.
+I've done API-RTA before the vulnerable e-commerce API I built to mess around with BOLA, BFLA, IDOR, price manipulation, JWT forgery, SSRF into fake AWS metadata. Had some experience with it going in, and that's what led me to build this one.
 
 That one was API-only, no UI, and honestly kind of narrow in scope. This time I wanted something bigger. A proper web application, not just a set of endpoints — something with a login flow, a real frontend, an admin panel, the whole thing.
 
@@ -26,7 +26,7 @@ The idea was simple: pick basically every vuln class I actually care about for A
 
 Flask + SQLite, server-rendered Jinja templates, a little vanilla JS where it needed it (the avatar-import feature).
 
-This wasn't a hard decision — it's exactly where I am on my AppSec learning track right now. Python fundamentals, then SQL, then Flask.
+This wasn't a hard decision it's exactly where I am on my AppSec learning track right now. Python fundamentals, then SQL, then Flask.
 
 Building something real in the same stack I'm supposed to be learning it in beats doing isolated tutorial exercises. If I'm going to spend hours on a project anyway, it might as well double as the Flask practice I already had scheduled.
 
@@ -34,7 +34,7 @@ SQLite because I didn't want database setup to be a blocker. One file, zero conf
 
 ## What VulnKen actually is
 
-On the surface, it's a small internal marketplace — think a mini internal company store.
+On the surface, it's a small internal marketplace think a mini internal company store.
 
 Product listings, a search bar, user accounts, order history, reviews, an admin panel, and a profile page with avatar upload.
 
@@ -80,7 +80,7 @@ Post:
 
 as a review and it fires for every single visitor who loads that product page afterward.
 
-Not reflected, not once — it's sitting in the database, so it hits everyone.
+Not reflected, not once it's sitting in the database, so it hits everyone.
 
 ### IDOR + BFLA
 
@@ -113,7 +113,7 @@ def update_order_status(order_id):
         (new_status, order_id)
     )
 
-    # no role check — any logged-in user, not just admins
+    # no role check any logged-in user, not just admins
 ```
 
 Log in as Bob, increment the order ID in the URL, and you're reading Alice's orders.
@@ -122,7 +122,7 @@ The same session gets you marking other people's orders as `"shipped"`.
 
 ### Broken access control on `/admin`
 
-I made this one sloppy in a specific way — it trusts a plain client-side cookie before it falls back to the real session check:
+I made this one sloppy in a specific way it trusts a plain client-side cookie before it falls back to the real session check:
 
 ```python
 @app.route("/admin")
@@ -170,7 +170,7 @@ I stood up a fake internal-only route:
 /internal/admin-token
 ```
 
-that isn't linked anywhere in the UI — the only way to reach it as an outside user is through this SSRF.
+that isn't linked anywhere in the UI the only way to reach it as an outside user is through this SSRF.
 
 Point the import feature at:
 
@@ -206,7 +206,7 @@ Build a token with `alg: none` and no signature, set the `role` claim to `admin`
 
 No secret needed at all.
 
-I also left in broken auth — predictable, unsalted MD5 password-reset tokens, no login rate limiting — and an unrestricted avatar upload with no `secure_filename()` or extension check, but those two are less interesting to walk through in code.
+I also left in broken auth predictable, unsalted MD5 password-reset tokens, no login rate limiting — and an unrestricted avatar upload with no `secure_filename()` or extension check, but those two are less interesting to walk through in code.
 
 Same idea, less flashy exploit.
 
@@ -258,7 +258,7 @@ There's a difference between an app being vulnerable **in theory** and watching 
 
 ## What's next
 
-Now that it's built and running, the next step is attacking it properly — going through it the way I'd approach a real target, documenting the process the way I would for an actual assessment, and then writing that whole walkthrough up as a follow-up post.
+Now that it's built and running, the next step is attacking it properly going through it the way I'd approach a real target, documenting the process the way I would for an actual assessment, and then writing that whole walkthrough up as a follow-up post.
 
 Building the bugs in was one kind of exercise.
 
