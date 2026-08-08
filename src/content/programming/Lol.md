@@ -46,7 +46,7 @@ The basic application will have user registration, authentication, a user profil
 
 The basic structure looks something like this:
 
-```text
+
 Web Application
 │
 ├── Registration
