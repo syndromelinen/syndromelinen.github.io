@@ -125,6 +125,8 @@ html.reader-mode .site {
 
 html.reader-mode * {
   animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
   box-shadow: none !important;
   text-shadow: none !important;
   background-image: none !important;
