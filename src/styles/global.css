@@ -42,6 +42,8 @@
 
   --transition: 0.25s cubic-bezier(0.22, 1, 0.36, 1);
   --transition-fast: 0.16s cubic-bezier(0.22, 1, 0.36, 1);
+  /* slow, deliberate fade used for the bg-to-black shift when reader/terminal mode engages */
+  --bg-transition: 1.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 [data-theme="terminal"] {
@@ -96,6 +98,40 @@
 
 @media (prefers-reduced-motion: reduce) {
   [data-theme="terminal"] body { animation: none; }
+}
+
+/* ── READER MODE — always in sync with terminal mode (see Base.astro applyTheme) ── */
+[data-reader="true"] .navbar {
+  transition: background var(--bg-transition), backdrop-filter var(--bg-transition), padding 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, opacity var(--bg-transition);
+  opacity: 0.5;
+}
+[data-reader="true"] .navbar:hover,
+[data-reader="true"] .navbar:focus-within {
+  opacity: 1;
+}
+
+[data-reader="true"] footer {
+  transition: opacity var(--bg-transition);
+  opacity: 0.45;
+}
+[data-reader="true"] footer:hover {
+  opacity: 1;
+}
+
+/* article content itself stays fully lit and gets a touch more breathing room */
+[data-reader="true"] .prose {
+  transition: max-width var(--bg-transition);
+}
+[data-reader="true"] .prose p,
+[data-reader="true"] .prose li {
+  transition: color var(--transition);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reader="true"] .navbar,
+  [data-reader="true"] footer {
+    transition: opacity var(--transition);
+  }
 }
 
 /* CRT power-off/on transition — screen collapses to a line and back, like an old TV */
@@ -209,7 +245,12 @@ html.custom-cursor-on * {
 }
 
 body {
-  transition: background-color var(--transition), color var(--transition);
+  /* background eases in slowly (matches reader/terminal-mode fade to black); text color still snaps quickly for legibility */
+  transition: background-color var(--bg-transition), color var(--transition);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body { transition: background-color var(--transition), color var(--transition); }
 }
 
 body.menu-locked { overflow: hidden; }
@@ -358,6 +399,11 @@ body {
 #theme-toggle .icon-moon { display: none; }
 [data-theme="terminal"] #theme-toggle .icon-sun { display: none; }
 [data-theme="terminal"] #theme-toggle .icon-moon { display: block; }
+
+#reader-toggle .icon-lamp-on { display: none; }
+[data-reader="true"] #reader-toggle .icon-lamp-off { display: none; }
+[data-reader="true"] #reader-toggle .icon-lamp-on { display: block; }
+[data-reader="true"] #reader-toggle { color: var(--purple-hover); }
 
 #nav-grid-toggle[aria-expanded="true"] { color: var(--purple-hover); background: var(--surface2); }
 
