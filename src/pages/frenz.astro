@@ -1,0 +1,40 @@
+---
+import Base from '../layouts/Base.astro';
+
+const frenz = [
+  {
+    name: 'The Darknet Community',
+    tagline: '4,000+ member cybersecurity community across Mumbai & Nagpur. Workshops, mentorship, CTFs — no gatekeeping. I\'m HR lead here.',
+    url: 'https://www.thedarknetcommunity.com/',
+    domain: 'thedarknetcommunity.com',
+  },
+];
+---
+
+<Base title="frenz">
+  <div style="padding-top: 88px;">
+    <div class="section-title" style="margin-bottom: 8px;">Frenz / Associates</div>
+
+    <div class="about-text" style="margin-top: 12px; margin-bottom: 32px;">
+      <p>People and communities on a similar path.</p>
+    </div>
+
+    <div class="cards-grid">
+      {frenz.map((f) => (
+        <a href={f.url} target="_blank" rel="noopener noreferrer" class="blog-card">
+          <div class="card-title">{f.name}</div>
+          <div class="card-desc">{f.tagline}</div>
+          <div class="card-footer">
+            <span class="card-date">{f.domain}</span>
+            <span class="card-read">
+              Visit
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/>
+              </svg>
+            </span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</Base>
