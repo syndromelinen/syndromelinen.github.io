@@ -123,10 +123,52 @@
   opacity: 1;
 }
 
-/* dim the starfield slightly so it recedes behind the content, same slow fade */
+/* starfield recedes and softens behind the content — same slow fade, with a touch of blur for depth */
 [data-reader="true"] #marble {
-  transition: opacity var(--bg-transition);
-  opacity: 0.4;
+  transition: opacity var(--bg-transition), filter var(--bg-transition);
+  opacity: 0.35;
+  filter: blur(1.5px);
+}
+
+/* reading measure tightens for comfortable line length, extra breathing room between lines */
+[data-reader="true"] .prose {
+  transition: max-width var(--bg-transition), line-height var(--bg-transition);
+  max-width: 640px;
+  line-height: 1.85;
+}
+
+/* the point of reading mode — scroll and read, nothing else grabs attention */
+[data-reader="true"] .navbar-icon-btn:hover,
+[data-reader="true"] .nav-grid-item:hover,
+[data-reader="true"] .tag-btn:hover,
+[data-reader="true"] .share-btn:hover,
+[data-reader="true"] .post-nav-item:hover,
+[data-reader="true"] .recent-card:hover {
+  background: inherit;
+  border-color: inherit;
+  color: inherit;
+  transform: none;
+  box-shadow: none;
+}
+/* reader-toggle itself stays interactive — you still need to be able to turn it off */
+[data-reader="true"] #reader-toggle:hover {
+  color: var(--purple-hover);
+  background: var(--surface2);
+}
+
+/* custom cursor glow goes quiet — plain system cursor while reading */
+[data-reader="true"].custom-cursor-on #cursor-dot,
+[data-reader="true"].custom-cursor-on #cursor-ring {
+  display: none !important;
+  opacity: 0 !important;
+}
+[data-reader="true"].custom-cursor-on,
+[data-reader="true"].custom-cursor-on * {
+  cursor: auto !important;
+}
+[data-reader="true"].custom-cursor-on a,
+[data-reader="true"].custom-cursor-on button {
+  cursor: pointer !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
