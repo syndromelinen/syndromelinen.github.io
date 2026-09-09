@@ -652,7 +652,11 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .scroll-cue { animation: none; opacity: 1; }
+  .hero h1, .hero-stack, .hero-desc, .hero-btns, .scroll-cue {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* ── ABOUT PREVIEW (homepage) ── */
@@ -692,6 +696,12 @@ body {
     grid-template-columns: 1.4fr 1fr;
     gap: 56px;
     align-items: center;
+    /* keeps the row's height stable no matter what — without this, a browser
+       that briefly mis-times the hero's entrance animation (e.g. right as the
+       viewport jumps size going in/out of fullscreen) can render the grid at
+       a near-zero height for a frame, since grid auto-rows follows content box
+       size and opacity/animation timing shouldn't be load-bearing for layout */
+    min-height: 460px;
   }
   .hero-row .hero { padding-bottom: 0; }
   .hero-row .about-preview {

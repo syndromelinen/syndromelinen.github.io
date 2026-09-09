@@ -206,6 +206,10 @@ const structuredData = {
     const crtOverlay = document.getElementById('crt-overlay');
     const bootLog = document.getElementById('boot-log');
     const bootLines = ['initializing kernel...', 'loading modules...', 'mounting /dev/terminal...', '[ OK ]'];
+    // mirror sequence for leaving terminal mode — same rhythm, same hold time,
+    // so "black → text" reads the same going either direction instead of the
+    // exit feeling like an instant snap back
+    const shutdownLines = ['syncing filesystem...', 'unmounting /dev/terminal...', 'restoring interface...', '[ OK ]'];
     let themeBusy = false;
 
     themeBtn?.addEventListener('click', () => {
@@ -229,25 +233,24 @@ const structuredData = {
       const collapseMs = 380;
       const lineDelay = 420;
       const readPauseMs = 750;
-      const holdMs = goingTerminal ? bootLines.length * lineDelay + readPauseMs : 260;
+      const activeLines = goingTerminal ? bootLines : shutdownLines;
+      const holdMs = activeLines.length * lineDelay + readPauseMs;
       const expandMs = 380;
 
       setTimeout(() => {
         applyTheme(goingTerminal);
         document.dispatchEvent(new CustomEvent('themechange', { detail: { theme: goingTerminal ? 'terminal' : 'dark' } }));
 
-        if (goingTerminal) {
-          bootLog.classList.add('visible');
-          bootLines.forEach((line, i) => {
-            setTimeout(() => {
-              const row = document.createElement('div');
-              row.className = 'boot-line';
-              row.textContent = line;
-              bootLog.appendChild(row);
-              requestAnimationFrame(() => row.classList.add('in'));
-            }, i * lineDelay);
-          });
-        }
+        bootLog.classList.add('visible');
+        activeLines.forEach((line, i) => {
+          setTimeout(() => {
+            const row = document.createElement('div');
+            row.className = 'boot-line';
+            row.textContent = line;
+            bootLog.appendChild(row);
+            requestAnimationFrame(() => row.classList.add('in'));
+          }, i * lineDelay);
+        });
 
         setTimeout(() => {
           crtOverlay.classList.remove('crt-collapse');
@@ -260,6 +263,23 @@ const structuredData = {
           }, expandMs);
         }, holdMs);
       }, collapseMs);
+    });
+
+    // Safety net for the fullscreen-entry glitch: if a fullscreen transition
+    // backgrounds the tab for a moment mid-timer, the crt overlay/boot-log
+    // timers can end up delayed or stuck, which is what makes the page look
+    // broken (stuck overlay, or a fixed/backdrop-filter layer that never
+    // repaints at the new viewport size). Nudge a reflow and force-clear any
+    // stuck overlay state whenever the viewport size or fullscreen state changes.
+    function unstick() {
+      if (crtOverlay) crtOverlay.classList.remove('crt-collapse', 'crt-expand');
+      if (bootLog) { bootLog.classList.remove('visible'); bootLog.innerHTML = ''; }
+      themeBusy = false;
+      void document.body.offsetHeight;
+    }
+    document.addEventListener('fullscreenchange', () => requestAnimationFrame(unstick));
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') requestAnimationFrame(unstick);
     });
 
     function applyTheme(goingTerminal: boolean) {
