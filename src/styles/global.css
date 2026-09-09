@@ -67,22 +67,7 @@
   --font-body: var(--font-mono);
 }
 
-/* CRT scanlines + faint flicker — terminal mode only */
-[data-theme="terminal"] body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  pointer-events: none;
-  background: repeating-linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0.035) 0px,
-    rgba(255, 255, 255, 0.035) 1px,
-    transparent 1px,
-    transparent 3px
-  );
-  mix-blend-mode: overlay;
-}
+/* scanline/grain texture removed — terminal mode now fades to plain black (see below) */
 
 [data-theme="terminal"] body {
   text-shadow: 0 0 1px rgba(230, 230, 230, 0.25);
@@ -100,79 +85,74 @@
   [data-theme="terminal"] body { animation: none; }
 }
 
-/* ── READER MODE — always in sync with terminal mode (see Base.astro applyTheme) ── */
-/* forces the background to black regardless of theme — this is the actual "turns black" effect */
-[data-reader="true"] body {
+/* ── TERMINAL MODE — single toggle now drives everything (theme + focus effects) ── */
+/* CRT scanline/grain texture removed — plain fade to black instead */
+
+[data-theme="terminal"] body {
   background-color: #000;
 }
 
-[data-reader="true"] .navbar {
+[data-theme="terminal"] .navbar {
   transition: background var(--bg-transition), backdrop-filter var(--bg-transition), padding 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, opacity var(--bg-transition);
   opacity: 0.5;
 }
-[data-reader="true"] .navbar:hover,
-[data-reader="true"] .navbar:focus-within {
+[data-theme="terminal"] .navbar:hover,
+[data-theme="terminal"] .navbar:focus-within {
   opacity: 1;
 }
 
-[data-reader="true"] footer {
+[data-theme="terminal"] footer {
   transition: opacity var(--bg-transition);
   opacity: 0.45;
 }
-[data-reader="true"] footer:hover {
+[data-theme="terminal"] footer:hover {
   opacity: 1;
 }
 
 /* starfield recedes and softens behind the content — same slow fade, with a touch of blur for depth */
-[data-reader="true"] #marble {
+[data-theme="terminal"] #marble {
   transition: opacity var(--bg-transition), filter var(--bg-transition);
   opacity: 0.35;
   filter: blur(1.5px);
 }
 
-/* reading measure tightens for comfortable line length, extra breathing room between lines */
-[data-reader="true"] .prose {
-  transition: max-width var(--bg-transition), line-height var(--bg-transition);
-  max-width: 640px;
-  margin-left: auto;
-  margin-right: auto;
-  line-height: 1.85;
-}
+/* article content keeps its normal reading width in terminal mode — no narrowing */
 
-/* headings and title pick up a soft glow — matches the moon/hero glow already used site-wide */
-[data-reader="true"] .post-header h1,
-[data-reader="true"] .prose h2,
-[data-reader="true"] .prose h3 {
+/* headings, title, and body copy all pick up a soft glow — matches the moon/hero glow already used site-wide */
+[data-theme="terminal"] .post-header h1,
+[data-theme="terminal"] .prose h2,
+[data-theme="terminal"] .prose h3 {
   transition: text-shadow var(--bg-transition), color var(--bg-transition);
   color: var(--white);
   text-shadow: 0 0 18px rgba(255, 255, 255, 0.35), 0 0 42px var(--border-glow);
 }
+[data-theme="terminal"] .prose p,
+[data-theme="terminal"] .prose li,
+[data-theme="terminal"] .post-header-desc {
+  transition: text-shadow var(--bg-transition), color var(--bg-transition);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.22), 0 0 24px var(--border-glow);
+}
 
-/* the point of reading mode — scroll and read, nothing else grabs attention */
-[data-reader="true"] .navbar-icon-btn:hover,
-[data-reader="true"] .nav-grid-item:hover,
-[data-reader="true"] .tag-btn:hover,
-[data-reader="true"] .share-btn:hover,
-[data-reader="true"] .post-nav-item:hover,
-[data-reader="true"] .recent-card:hover {
+/* the point of terminal/focus mode — scroll and read, nothing else grabs attention */
+[data-theme="terminal"] .navbar-icon-btn:hover,
+[data-theme="terminal"] .nav-grid-item:hover,
+[data-theme="terminal"] .tag-btn:hover,
+[data-theme="terminal"] .share-btn:hover,
+[data-theme="terminal"] .post-nav-item:hover,
+[data-theme="terminal"] .recent-card:hover {
   background: inherit;
   border-color: inherit;
   color: inherit;
   transform: none;
   box-shadow: none;
 }
-/* reader-toggle itself stays interactive — you still need to be able to turn it off */
-[data-reader="true"] #reader-toggle:hover {
-  color: var(--purple-hover);
-  background: var(--surface2);
-}
 
-/* custom cursor removed — native OS cursor used everywhere, including reader mode */
+/* custom cursor removed — native OS cursor used everywhere, including terminal mode */
 
 @media (prefers-reduced-motion: reduce) {
-  [data-reader="true"] .navbar,
-  [data-reader="true"] footer,
-  [data-reader="true"] #marble {
+  [data-theme="terminal"] .navbar,
+  [data-theme="terminal"] footer,
+  [data-theme="terminal"] #marble {
     transition: opacity var(--transition);
   }
 }
@@ -241,43 +221,9 @@
   transform: translateY(0);
 }
 
-/* ── CUSTOM CURSOR (desktop / mouse only) ── */
-#cursor-dot, #cursor-ring {
-  position: fixed;
-  top: 0;
-  left: 0;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 10050;
-  transform: translate(-50%, -50%);
-  display: none;
-  opacity: 0;
-}
-
-#cursor-dot {
-  width: 6px;
-  height: 6px;
-  background: var(--purple);
-  transition: opacity 0.2s ease;
-}
-
-#cursor-ring {
-  width: 30px;
-  height: 30px;
-  border: 1.5px solid var(--purple);
-  box-shadow: 0 0 14px var(--border-glow), 0 0 4px var(--purple);
-  transition: left 0.13s ease-out, top 0.13s ease-out, width 0.18s ease, height 0.18s ease, opacity 0.2s ease;
-}
-
-#cursor-ring.hovering {
-  width: 52px;
-  height: 52px;
-  border-color: var(--purple-hover);
-  box-shadow: 0 0 22px var(--border-glow), 0 0 8px var(--purple-hover);
-}
-
-/* cursor-dot/cursor-ring elements remain in the DOM but stay display:none —
-   the custom-cursor-on class that activates them is no longer applied by JS */
+/* custom cursor (dot/ring, JS-tracked) removed entirely — replaced by the
+   native CSS cursor: url(/cursor.png) rule on html, which has zero lag
+   since the browser renders it natively instead of JS position-tracking a div */
 
 body {
   /* background eases in slowly (matches reader/terminal-mode fade to black); text color still snaps quickly for legibility */
@@ -297,6 +243,7 @@ html {
   scroll-behavior: smooth;
   overflow-x: hidden;
   width: 100%;
+  cursor: url('/cursor.png') 2 2, auto;
 }
 body {
   background: var(--bg);
@@ -434,11 +381,6 @@ body {
 #theme-toggle .icon-moon { display: none; }
 [data-theme="terminal"] #theme-toggle .icon-sun { display: none; }
 [data-theme="terminal"] #theme-toggle .icon-moon { display: block; }
-
-#reader-toggle .icon-lamp-on { display: none; }
-[data-reader="true"] #reader-toggle .icon-lamp-off { display: none; }
-[data-reader="true"] #reader-toggle .icon-lamp-on { display: block; }
-[data-reader="true"] #reader-toggle { color: var(--purple-hover); }
 
 #nav-grid-toggle[aria-expanded="true"] { color: var(--purple-hover); background: var(--surface2); }
 
@@ -776,6 +718,27 @@ body {
   .about-preview { flex-direction: column; align-items: flex-start; gap: 16px; }
 }
 
+/* ── HERO ROW — desktop-only side-by-side layout for hero + about card ── */
+/* below 1100px this is a no-op; .hero and .about-preview stack exactly as before */
+@media (min-width: 1100px) {
+  .hero-row {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 56px;
+    align-items: center;
+  }
+  .hero-row .hero { padding-bottom: 0; }
+  .hero-row .about-preview {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+    padding: 28px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+  }
+}
+
 /* ── BUTTONS ── */
 .btn {
   display: inline-flex;
@@ -928,6 +891,24 @@ body {
   line-height: 1.4;
   margin-bottom: 6px;
   position: relative;
+}
+
+.card-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+  position: relative;
+}
+.card-title-row .card-title { margin-bottom: 0; }
+
+.card-favicon {
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  flex-shrink: 0;
+  background: var(--surface2);
+  object-fit: cover;
 }
 
 .card-desc {

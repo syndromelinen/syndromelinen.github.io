@@ -22,7 +22,18 @@ const frenz = [
     <div class="cards-grid">
       {frenz.map((f) => (
         <a href={f.url} target="_blank" rel="noopener noreferrer" class="blog-card">
-          <div class="card-title">{f.name}</div>
+          <div class="card-title-row">
+            <img
+              class="card-favicon"
+              src={`https://www.google.com/s2/favicons?sz=64&domain=${f.domain}`}
+              alt=""
+              width="20"
+              height="20"
+              loading="lazy"
+              onerror="this.style.display='none'"
+            />
+            <div class="card-title">{f.name}</div>
+          </div>
           <div class="card-desc">{f.tagline}</div>
           <div class="card-footer">
             <span class="card-date">{f.domain}</span>
