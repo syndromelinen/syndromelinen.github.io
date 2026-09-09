@@ -229,7 +229,7 @@
    real systemd/Arch boot sequence typing itself out line by line */
 #boot-log.boot-log--lines {
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   text-align: center;
   gap: 3px;
   font-size: 13px;
