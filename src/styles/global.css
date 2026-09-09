@@ -230,7 +230,7 @@
 #boot-log.boot-log--lines {
   flex-direction: column;
   align-items: flex-start;
-  text-align: left;
+  text-align: center;
   gap: 3px;
   font-size: 13px;
   line-height: 1.7;
