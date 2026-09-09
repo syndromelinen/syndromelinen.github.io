@@ -109,11 +109,10 @@
   opacity: 1;
 }
 
-/* starfield recedes and softens behind the content — same slow fade, with a touch of blur for depth */
+/* starfield fully fades to black in terminal mode — no lingering bg image */
 [data-theme="terminal"] #marble {
-  transition: opacity var(--bg-transition), filter var(--bg-transition);
-  opacity: 0.35;
-  filter: blur(1.5px);
+  transition: opacity var(--bg-transition);
+  opacity: 0;
 }
 
 /* article content keeps its normal reading width in terminal mode — no narrowing */
@@ -554,31 +553,7 @@ body {
   [data-theme="terminal"] .hero h1 { font-size: clamp(56px, 5vw, 88px); }
 }
 
-/* terminal mode: blinking cursor stays after the heading, always running */
-.hero h1::after {
-  content: '';
-}
-[data-theme="terminal"] .hero h1::after {
-  content: '_';
-  margin-left: 6px;
-  animation: terminal-cursor-blink 1s steps(1, end) infinite;
-}
-@media (prefers-reduced-motion: reduce) {
-  [data-theme="terminal"] .hero h1::after { animation: none; }
-}
-
-/* terminal mode: blinking cursor after "Thoughts." in the subheading */
-.thoughts-word::after {
-  content: '';
-}
-[data-theme="terminal"] .thoughts-word::after {
-  content: '_';
-  margin-left: 3px;
-  animation: terminal-cursor-blink 1s steps(1, end) infinite;
-}
-@media (prefers-reduced-motion: reduce) {
-  [data-theme="terminal"] .thoughts-word::after { animation: none; }
-}
+/* blinking terminal cursor after the heading and after "Thoughts." — removed per feedback */
 
 .hero-stack {
   font-family: var(--font-head);
@@ -594,22 +569,6 @@ body {
 .hero-stack span {
   color: var(--white);
   transition: color 0.2s;
-}
-
-.thoughts-word::after {
-  content: '';
-}
-
-@media (min-width: 1100px) {
-  [data-theme="terminal"] .thoughts-word::after {
-    content: '_';
-    margin-left: 4px;
-    animation: terminal-cursor-blink 1s steps(1, end) infinite;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .thoughts-word::after { animation: none; }
 }
 
 .hero-desc {
