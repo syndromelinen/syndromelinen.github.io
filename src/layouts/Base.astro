@@ -201,15 +201,22 @@ const structuredData = {
     // Custom cursor disabled — native OS cursor used everywhere now (the animated
     // dot/ring trailed the mouse with a 0.13s delay, which read as laggy)
 
-    // Theme toggle — CRT collapse → boot log (entering terminal) → expand
+    // Theme toggle — fade to solid black → (entering) real boot-log style startup
+    // text, or (leaving) a short message → slow graceful fade back into the page
     const themeBtn = document.getElementById('theme-toggle');
     const crtOverlay = document.getElementById('crt-overlay');
     const bootLog = document.getElementById('boot-log');
-    const bootLines = ['initializing kernel...', 'loading modules...', 'mounting /dev/terminal...', '[ OK ]'];
-    // mirror sequence for leaving terminal mode — same rhythm, same hold time,
-    // so "black → text" reads the same going either direction instead of the
-    // exit feeling like an instant snap back
-    const shutdownLines = ['syncing filesystem...', 'unmounting /dev/terminal...', 'restoring interface...', '[ OK ]'];
+    const bootLines = [
+      'Starting Version 256.7-2 (Arch Linux) ...',
+      '[  <span class="ok">OK</span>  ] Started Journal Service.',
+      '[  <span class="ok">OK</span>  ] Mounted /boot.',
+      '[  <span class="ok">OK</span>  ] Reached target Local File Systems.',
+      '[  <span class="ok">OK</span>  ] Started Network Manager.',
+      '[  <span class="ok">OK</span>  ] Reached target Multi-User System.',
+      '',
+      'Welcome to kennytherex.',
+    ];
+    const exitMessage = 'back to reader mode_';
     let themeBusy = false;
 
     themeBtn?.addEventListener('click', () => {
@@ -224,45 +231,67 @@ const structuredData = {
 
       themeBusy = true;
       bootLog.innerHTML = '';
-      bootLog.classList.remove('visible');
-      crtOverlay.classList.remove('crt-expand');
+      bootLog.classList.remove('visible', 'boot-log--lines', 'boot-log--message');
+      crtOverlay.classList.remove('crt-expand', 'crt-expand-slow');
       // force reflow so the animation restarts cleanly on repeated clicks
       void crtOverlay.offsetWidth;
       crtOverlay.classList.add('crt-collapse');
 
-      const collapseMs = 380;
-      const lineDelay = 420;
-      const readPauseMs = 750;
-      const activeLines = goingTerminal ? bootLines : shutdownLines;
-      const holdMs = activeLines.length * lineDelay + readPauseMs;
-      const expandMs = 380;
+      const fadeInMs = 650; // screen eases to solid black
 
       setTimeout(() => {
+        // overlay is fully opaque now — safe to swap the theme underneath it unseen
         applyTheme(goingTerminal);
         document.dispatchEvent(new CustomEvent('themechange', { detail: { theme: goingTerminal ? 'terminal' : 'dark' } }));
 
-        bootLog.classList.add('visible');
-        activeLines.forEach((line, i) => {
-          setTimeout(() => {
-            const row = document.createElement('div');
-            row.className = 'boot-line';
-            row.textContent = line;
-            bootLog.appendChild(row);
-            requestAnimationFrame(() => row.classList.add('in'));
-          }, i * lineDelay);
-        });
+        if (goingTerminal) {
+          // looks like a real boot log typing itself out, line by line
+          const lineDelay = 160;
+          const readPauseMs = 700;
+          bootLog.classList.add('boot-log--lines', 'visible');
+          bootLines.forEach((line, i) => {
+            setTimeout(() => {
+              const row = document.createElement('div');
+              row.className = 'boot-line';
+              row.innerHTML = line || '&nbsp;';
+              bootLog.appendChild(row);
+              requestAnimationFrame(() => row.classList.add('in'));
+            }, i * lineDelay);
+          });
 
-        setTimeout(() => {
-          crtOverlay.classList.remove('crt-collapse');
-          crtOverlay.classList.add('crt-expand');
-          bootLog.classList.remove('visible');
           setTimeout(() => {
-            crtOverlay.classList.remove('crt-expand');
-            bootLog.innerHTML = '';
-            themeBusy = false;
-          }, expandMs);
-        }, holdMs);
-      }, collapseMs);
+            bootLog.classList.remove('visible');
+            setTimeout(() => {
+              crtOverlay.classList.remove('crt-collapse');
+              crtOverlay.classList.add('crt-expand');
+              setTimeout(() => {
+                crtOverlay.classList.remove('crt-expand');
+                bootLog.innerHTML = '';
+                bootLog.classList.remove('boot-log--lines');
+                themeBusy = false;
+              }, 900);
+            }, 200);
+          }, bootLines.length * lineDelay + readPauseMs);
+        } else {
+          // exiting terminal — no log, just a slow, deliberate reveal back to reader mode
+          bootLog.textContent = exitMessage;
+          bootLog.classList.add('boot-log--message', 'visible');
+
+          setTimeout(() => {
+            bootLog.classList.remove('visible');
+            setTimeout(() => {
+              crtOverlay.classList.remove('crt-collapse');
+              crtOverlay.classList.add('crt-expand-slow');
+              setTimeout(() => {
+                crtOverlay.classList.remove('crt-expand-slow');
+                bootLog.textContent = '';
+                bootLog.classList.remove('boot-log--message');
+                themeBusy = false;
+              }, 1600);
+            }, 300);
+          }, 900);
+        }
+      }, fadeInMs);
     });
 
     // Safety net for the fullscreen-entry glitch: if a fullscreen transition
@@ -272,8 +301,11 @@ const structuredData = {
     // repaints at the new viewport size). Nudge a reflow and force-clear any
     // stuck overlay state whenever the viewport size or fullscreen state changes.
     function unstick() {
-      if (crtOverlay) crtOverlay.classList.remove('crt-collapse', 'crt-expand');
-      if (bootLog) { bootLog.classList.remove('visible'); bootLog.innerHTML = ''; }
+      if (crtOverlay) crtOverlay.classList.remove('crt-collapse', 'crt-expand', 'crt-expand-slow');
+      if (bootLog) {
+        bootLog.classList.remove('visible', 'boot-log--lines', 'boot-log--message');
+        bootLog.innerHTML = '';
+      }
       themeBusy = false;
       void document.body.offsetHeight;
     }

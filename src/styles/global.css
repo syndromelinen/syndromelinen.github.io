@@ -163,7 +163,11 @@
   }
 }
 
-/* CRT power-off/on transition — screen collapses to a line and back, like an old TV */
+/* Theme-toggle transition — screen eases to solid black, holds on a centered
+   message, then eases back into the page. (Previously this scaled down to a
+   thin line instead of staying opaque, so the real page stayed visible
+   underneath the whole time — that's why the boot text used to look like it
+   was floating over the live page instead of a real blackout.) */
 #crt-overlay {
   position: fixed;
   inset: 0;
@@ -171,30 +175,33 @@
   pointer-events: none;
   background: #000;
   opacity: 0;
-  transform: scaleY(1);
 }
 
 #crt-overlay.crt-collapse {
-  animation: crt-power-off 0.38s ease-in forwards;
+  animation: overlay-fade-in 0.65s ease forwards;
 }
 
 #crt-overlay.crt-expand {
-  animation: crt-power-on 0.38s ease-out forwards;
+  animation: overlay-fade-out 0.9s ease forwards;
 }
 
-@keyframes crt-power-off {
-  0% { opacity: 0; transform: scaleY(1); }
-  55% { opacity: 1; transform: scaleY(0.2); }
-  100% { opacity: 1; transform: scaleY(0.006); }
+#crt-overlay.crt-expand-slow {
+  /* the exit reveal — noticeably slower/gentler than entering, so the page
+     eases back into view instead of snapping back */
+  animation: overlay-fade-out 1.6s ease forwards;
 }
 
-@keyframes crt-power-on {
-  0% { opacity: 1; transform: scaleY(0.006); }
-  45% { opacity: 1; transform: scaleY(0.2); }
-  100% { opacity: 0; transform: scaleY(1); }
+@keyframes overlay-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-/* Boot log sits on its own layer, above the collapsing screen — never scaled, so text stays legible the whole time */
+@keyframes overlay-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* Message/log sits on its own layer above the black overlay */
 #boot-log {
   position: fixed;
   inset: 0;
@@ -203,29 +210,42 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-direction: column;
-  gap: 4px;
   opacity: 0;
-  transition: opacity 0.15s ease;
+  transition: opacity 0.4s ease;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 13px;
-  line-height: 1.8;
   color: #fff;
-  text-align: left;
+  text-align: center;
 }
 
 #boot-log.visible { opacity: 1; }
 
-#boot-log .boot-line {
-  opacity: 0;
-  transform: translateY(4px);
-  transition: opacity 0.2s ease, transform 0.2s ease;
+/* single centered line — used when leaving terminal mode */
+#boot-log.boot-log--message {
+  font-size: clamp(18px, 2.4vw, 28px);
+  letter-spacing: 0.02em;
 }
 
-#boot-log .boot-line.in {
-  opacity: 1;
-  transform: translateY(0);
+/* left-aligned startup log — used when entering terminal mode, styled like a
+   real systemd/Arch boot sequence typing itself out line by line */
+#boot-log.boot-log--lines {
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  gap: 3px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #d6d6d6;
 }
+
+#boot-log .boot-line {
+  opacity: 0;
+  transform: translateY(3px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+#boot-log .boot-line.in { opacity: 1; transform: translateY(0); }
+
+#boot-log .boot-line .ok { color: #3ddc84; font-weight: 600; }
 
 /* custom cursor (dot/ring, JS-tracked) removed entirely — replaced by the
    native CSS cursor: url(/cursor.png) rule on html, which has zero lag
