@@ -697,11 +697,22 @@ body {
   .hero-row .about-preview {
     flex-direction: column;
     align-items: flex-start;
-    gap: 18px;
-    padding: 28px;
+    gap: 22px;
+    padding: 36px;
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     background: var(--surface);
+  }
+  .hero-row .about-preview-avatar {
+    width: 76px;
+    height: 76px;
+  }
+  .hero-row .about-preview-text p {
+    font-size: 15px;
+    line-height: 1.8;
+  }
+  .hero-row .about-preview-text .view-all {
+    margin-top: 12px;
   }
 }
 
