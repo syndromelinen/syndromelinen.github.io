@@ -167,20 +167,7 @@
   background: var(--surface2);
 }
 
-/* custom cursor glow goes quiet — plain system cursor while reading */
-[data-reader="true"].custom-cursor-on #cursor-dot,
-[data-reader="true"].custom-cursor-on #cursor-ring {
-  display: none !important;
-  opacity: 0 !important;
-}
-[data-reader="true"].custom-cursor-on,
-[data-reader="true"].custom-cursor-on * {
-  cursor: auto !important;
-}
-[data-reader="true"].custom-cursor-on a,
-[data-reader="true"].custom-cursor-on button {
-  cursor: pointer !important;
-}
+/* custom cursor removed — native OS cursor used everywhere, including reader mode */
 
 @media (prefers-reduced-motion: reduce) {
   [data-reader="true"] .navbar,
@@ -289,16 +276,8 @@
   box-shadow: 0 0 22px var(--border-glow), 0 0 8px var(--purple-hover);
 }
 
-html.custom-cursor-on #cursor-dot,
-html.custom-cursor-on #cursor-ring {
-  display: block;
-  opacity: 0.85;
-}
-
-html.custom-cursor-on,
-html.custom-cursor-on * {
-  cursor: none !important;
-}
+/* cursor-dot/cursor-ring elements remain in the DOM but stay display:none —
+   the custom-cursor-on class that activates them is no longer applied by JS */
 
 body {
   /* background eases in slowly (matches reader/terminal-mode fade to black); text color still snaps quickly for legibility */

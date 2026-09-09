@@ -71,7 +71,10 @@ const structuredData = {
   <meta name="twitter:image" content={ogImage} />
 
   <title>{title} · kennytherex</title>
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="shortcut icon" href="/favicon-32x32.png" />
   <link rel="alternate" type="application/rss+xml" title="kennytherex" href="/rss.xml" />
   <link rel="canonical" href={Astro.url.href} />
 
@@ -216,46 +219,8 @@ const structuredData = {
       }
     });
 
-    // Custom cursor — desktop / fine-pointer devices only
-    const isDesktopPointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-    if (isDesktopPointer) {
-      document.documentElement.classList.add('custom-cursor-on');
-      const cursorDot = document.getElementById('cursor-dot');
-      const cursorRing = document.getElementById('cursor-ring');
-
-      window.addEventListener('mousemove', (e) => {
-        if (cursorDot) {
-          cursorDot.style.left = `${e.clientX}px`;
-          cursorDot.style.top = `${e.clientY}px`;
-        }
-        if (cursorRing) {
-          cursorRing.style.left = `${e.clientX}px`;
-          cursorRing.style.top = `${e.clientY}px`;
-        }
-      });
-
-      document.addEventListener('mouseover', (e) => {
-        const target = e.target as HTMLElement;
-        if (target.closest('a, button, .nav-grid-item, .navbar-icon-btn')) {
-          cursorRing?.classList.add('hovering');
-        }
-      });
-      document.addEventListener('mouseout', (e) => {
-        const target = e.target as HTMLElement;
-        if (target.closest('a, button, .nav-grid-item, .navbar-icon-btn')) {
-          cursorRing?.classList.remove('hovering');
-        }
-      });
-
-      document.addEventListener('mouseleave', () => {
-        cursorDot?.style.setProperty('opacity', '0');
-        cursorRing?.style.setProperty('opacity', '0');
-      });
-      document.addEventListener('mouseenter', () => {
-        cursorDot?.style.setProperty('opacity', '0.85');
-        cursorRing?.style.setProperty('opacity', '0.85');
-      });
-    }
+    // Custom cursor disabled — native OS cursor used everywhere now (the animated
+    // dot/ring trailed the mouse with a 0.13s delay, which read as laggy)
 
     // Reader mode toggle — standalone, reversible focus mode (dims chrome, fades bg to black)
     // Defaults to following terminal mode, but the button always wins once clicked (see setReader/applyTheme below)
