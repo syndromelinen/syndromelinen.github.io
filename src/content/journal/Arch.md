@@ -1,16 +1,10 @@
 ---
-
 title: "I Use Arch BTW"
 description: "Left Windows behind, fell into the Arch rabbit hole, customized everything in sight, and somehow ended up learning Linux along the way."
 date: "2026-09-10"
 tags:
-
-* Journal
-* Linux
-* Arch
-* HTB
-* Personal
-
+  - Journal
+  - Larping
 ---
 
 # I Use Arch BTW
