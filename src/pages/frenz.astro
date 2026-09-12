@@ -7,6 +7,14 @@ const frenz = [
     tagline: '4,000+ member cybersecurity community across Mumbai & Nagpur. Workshops, mentorship, CTFs — no gatekeeping. I\'m HR lead here.',
     url: 'https://www.thedarknetcommunity.com/',
     domain: 'thedarknetcommunity.com',
+    color: '#8b5cf6',
+  },
+  {
+    name: 'Yash',
+    tagline: 'Cybersecurity and comfy tech posts by Yash — runs the Cozy Fren Terminal blog.',
+    url: 'https://yashfren.net/',
+    domain: 'yashfren.net',
+    color: '#4ade80',
   },
 ];
 ---
@@ -21,7 +29,7 @@ const frenz = [
 
     <div class="cards-grid">
       {frenz.map((f) => (
-        <a href={f.url} target="_blank" rel="noopener noreferrer" class="blog-card">
+        <a href={f.url} target="_blank" rel="noopener noreferrer" class="blog-card" style={`border-left: 3px solid ${f.color}`}>
           <div class="card-title-row">
             <img
               class="card-favicon"
