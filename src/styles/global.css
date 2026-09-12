@@ -225,8 +225,10 @@
   letter-spacing: 0.02em;
 }
 
-/* left-aligned startup log — used when entering terminal mode, styled like a
-   real systemd/Arch boot sequence typing itself out line by line */
+/* centered startup log — used when entering terminal mode, styled like a
+   real systemd/Arch boot sequence typing itself out line by line. Centered
+   (not left-pinned) so it sits in the middle of the screen on wide desktop
+   viewports the same way it already reads on narrow mobile ones. */
 #boot-log.boot-log--lines {
   flex-direction: column;
   align-items: center;
@@ -706,6 +708,10 @@ body {
 
 @media (max-width: 560px) {
   .about-preview { flex-direction: column; align-items: flex-start; gap: 16px; }
+}
+
+@media (max-width: 560px) {
+  .frenz-pre { white-space: pre-wrap; word-break: break-word; overflow-x: hidden; }
 }
 
 /* ── HERO ROW — desktop-only side-by-side layout for hero + about card ── */
