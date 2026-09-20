@@ -285,10 +285,10 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── GLITCH BG ── static texture, dimmed for reading.
-   --glitch-dim: 0 = raw texture, 1 = pure black. Tweak this one number to taste. */
+/* ── STARFIELD BG ── dim, with a subtle glitch feel (see components/Marble.astro).
+   --stars-opacity: lower = dimmer. */
 #marble {
-  --glitch-dim: 0.62;
+  --stars-opacity: 0.5;
   position: fixed;
   inset: 0;
   z-index: 0;
@@ -296,18 +296,15 @@ body {
   overflow: hidden;
   opacity: 1;
   transition: opacity 0.4s ease;
-  background: var(--bg) url('/images/glitch-bg.webp') center / cover no-repeat;
 }
 
-/* flat dim + extra-dark center so the reading column stays calm
-   while the glitchy edges still show on wide screens */
-#marble::after {
-  content: '';
+#marble canvas {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(ellipse 55% 90% at 50% 50%, rgba(5, 5, 5, 0.55), rgba(5, 5, 5, 0) 100%),
-    rgba(5, 5, 5, var(--glitch-dim));
+  width: 100%;
+  height: 100%;
+  display: block;
+  opacity: var(--stars-opacity);
 }
 
 /* ── LAYOUT ── */
