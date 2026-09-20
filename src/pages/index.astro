@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
-import avatar from '../assets/avatar.jpg';
+import avatar from '../assets/avatar.png';
 
 const cyber = await getCollection('cybersecurity', p => !p.data.draft);
 const prog = await getCollection('programming', p => !p.data.draft);
