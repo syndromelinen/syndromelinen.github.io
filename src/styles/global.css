@@ -114,7 +114,7 @@
   opacity: 1;
 }
 
-/* starfield fully fades to black in terminal mode — no lingering bg image */
+/* bg fully fades to black in terminal mode — no lingering bg image */
 [data-theme="terminal"] #marble {
   transition: opacity var(--bg-transition);
   opacity: 0;
@@ -285,8 +285,10 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── STARFIELD BG ── */
+/* ── GLITCH BG ── static texture, dimmed for reading.
+   --glitch-dim: 0 = raw texture, 1 = pure black. Tweak this one number to taste. */
 #marble {
+  --glitch-dim: 0.62;
   position: fixed;
   inset: 0;
   z-index: 0;
@@ -294,14 +296,18 @@ body {
   overflow: hidden;
   opacity: 1;
   transition: opacity 0.4s ease;
+  background: var(--bg) url('/images/glitch-bg.webp') center / cover no-repeat;
 }
 
-#marble canvas {
+/* flat dim + extra-dark center so the reading column stays calm
+   while the glitchy edges still show on wide screens */
+#marble::after {
+  content: '';
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
+  background:
+    radial-gradient(ellipse 55% 90% at 50% 50%, rgba(5, 5, 5, 0.55), rgba(5, 5, 5, 0) 100%),
+    rgba(5, 5, 5, var(--glitch-dim));
 }
 
 /* ── LAYOUT ── */

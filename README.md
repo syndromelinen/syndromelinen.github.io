@@ -70,6 +70,6 @@ That's the point.
 
 ---
 
-https://syndromelinen.github.io
+https://kennytherex.dev
 
 i gotta add this file via git / terminal coz ese me error de rha h

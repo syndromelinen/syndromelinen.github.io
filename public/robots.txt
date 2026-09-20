@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://syndromelinen.github.io/sitemap-index.xml
+Sitemap: https://kennytherex.dev/sitemap-index.xml

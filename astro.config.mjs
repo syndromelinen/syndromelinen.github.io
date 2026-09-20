@@ -3,7 +3,7 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://syndromelinen.github.io',
+  site: 'https://kennytherex.dev',
   integrations: [mdx(), sitemap()],
   markdown: {
     shikiConfig: {
